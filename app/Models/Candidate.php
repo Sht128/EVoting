@@ -8,7 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class Voter extends Authenticatable
+class Candidate extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -22,10 +22,10 @@ class Voter extends Authenticatable
     /**
      * The table name
      */
-    protected $table = 'voter';
+    protected $table = 'candidate';
 
     /**
-     * Primary Key
+     * 
      */
     protected $primaryKey = 'ic';
 
@@ -37,17 +37,16 @@ class Voter extends Authenticatable
     protected $fillable = [
         'ic',
         'name',
-        'gender',
-        'race',
         'mobileNumber',
-        'district',
-        'state',
-        'postcode',
-        'address',
+        'registeredState',
         'parliamentalConstituency',
         'stateConstituency',
+        'party',
         'parlimentVoteStatus',
         'stateVoteStatus',
+        'parliamentElectionDeposit',
+        'stateElectionDeposit',
+        'campaignDeposit',
         'password',
         'userPrivilege',
     ];
@@ -60,15 +59,6 @@ class Voter extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
-    ];
-
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
     ];
 
     public $timestamps = false;

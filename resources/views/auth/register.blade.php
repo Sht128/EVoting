@@ -1,4 +1,3 @@
-@include('headerhome')
 @extends('layouts.app')
 
 @section('content')
@@ -10,6 +9,12 @@
 
                 <div class="card-body">
                     <form method="POST" action="{{ route('register') }}">
+                        @if(Session::has('success'))
+                        <div class="alert alert-success">{{Session::get('success')}}</div>
+                        @endif
+                        @if(Session::has('fail'))
+                        <div class="alert alert-danger">{{Session::get('fail')}}</div>
+                        @endif
                         @csrf
 
                         <div class="row mb-3">
@@ -97,10 +102,10 @@
                         </div>
 
                         <div class="row mb-3">
-                            <label for="email" class="col-md-4 col-form-label text-md-end">{{ __('Mobile No.') }}</label>
+                            <label for="mobileno" class="col-md-4 col-form-label text-md-end">{{ __('Mobile No.') }}</label>
 
                             <div class="col-md-6">
-                                <input id="mobileno" type="text" class="form-control @error('email') is-invalid @enderror" name="mobileno" value="{{ old('email') }}" placeholder="+601X-XXX-XXXX" required autocomplete="email">
+                                <input id="mobileno" type="text" class="form-control @error('email') is-invalid @enderror" name="mobileno" value="{{ old('mobileno') }}" placeholder="+601X-XXX-XXXX" required autocomplete="mobileno">
 
                                 @error('email')
                                     <span class="invalid-feedback" role="alert">
@@ -113,8 +118,8 @@
                         <div class="row mb-3">
                             <label for="password" class="col-md-4 col-form-label text-md-end">{{ __('Password') }}</label>
 
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
+                            <div class="col-md-8">
+                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" placeholder="At least an uppercase, lowercase letter and a digit is required" required autocomplete="new-password">
 
                                 @error('password')
                                     <span class="invalid-feedback" role="alert">
@@ -127,10 +132,22 @@
                         <div class="row mb-3">
                             <label for="password-confirm" class="col-md-4 col-form-label text-md-end">{{ __('Confirm Password') }}</label>
 
-                            <div class="col-md-6">
+                            <div class="col-md-8">
                                 <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
                             </div>
                         </div>
+
+                        <div class="row mb-3">
+                            <label for="password-confirm" class="col-md-4 col-form-label text-md-end">{{ __('User Type') }}</label>
+
+                            <div class="col-md-6">
+                                <select id="usertype" class="form-control" name="usertype" required autocomplete="new-password">
+                                    <option value="voter" name="voter">Voter</option>
+                                    <option value="candidate" name="candidate">Candidate</option>
+                                </select>
+                            </div>
+                        </div>
+                        
 
                         <div class="row mb-0">
                             <div class="col-md-6 offset-md-4">

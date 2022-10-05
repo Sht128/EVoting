@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
+use Session;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -15,6 +17,25 @@ class HomeController extends Controller
     {
         $this->middleware('auth');
     }
+
+    /**
+     * 
+     * Loads Home User Data
+     */
+    public function home(){
+        $userVoteCount = 0;
+        if(Auth::check()){
+            if(Auth::user()->parlimentVoteStatus == 0){
+                $userVoteCount = $userVoteCount + 1;
+            }
+            if(Auth::user()->stateVoteStatus == 0){
+                $userVoteCount = $userVoteCount + 1;
+            }
+        }
+        Session::put('userVoteCount', $userVoteCount);
+
+        return view('home');
+     }
 
     /**
      * Show the application dashboard.
