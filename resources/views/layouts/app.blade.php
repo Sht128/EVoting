@@ -81,7 +81,7 @@
 
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                 <?php  if(Auth::user()->userPrivilege == 0) 
-                                    echo('<a class="dropdown-item" href="">
+                                    echo('<a class="dropdown-item" href="admin.dashboardhome">
                                        Admin Dashboard
                                     </a>')
                                 ?>

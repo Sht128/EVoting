@@ -7,25 +7,24 @@
     <meta name="csrf_token" content="{{ csrf_token() }}">
     <meta http-equiv="X-UA-Compatible" content="ie-edge">
     <title>Home Page</title>
-    
-
 </head>
+
 <body>
 @include('headerhome')
 
-<div class="container">
+<div class="contentcontainer">
+    @if(Session::has('success'))
+    <div class="alert alert-success">{{Session::get('success')}}</div>
+    @endif
+    @if(Session::has('fail'))
+    <div class="alert alert-danger">{{Session::get('fail')}}</div>
+    @endif
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">Welcome, {{ Auth::user()->name}}</div>
+                <div class="card-header"><p>Welcome, {{ Auth::user()->name}}</p></div>
 
                 <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
-
                     {{ __('You are logged in!') }}
 
                     <p class="card title">Your Vote Eligibility Status indicates that you still have

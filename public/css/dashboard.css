@@ -1,0 +1,58 @@
+.sidebar {
+    height: 100%;
+    width: 195px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color:darkslategray;
+    overflow-x: hidden;
+    padding-top: 20px;
+  }
+
+  p{
+    color: black;
+  }
+  
+  .main {
+    margin-left: 195px;
+  }
+
+  .sidebar-nav-item{
+    position: relative;
+    width:200px;
+    height: 40px;
+  }
+
+  .sidebar a:hover{
+    color: darkcyan;
+    background-color: aquamarine;
+  }
+
+.candidate-deposit-list{
+  align-content: center;
+  color:black;
+}
+  .candidate-deposit-list table{
+    align-items: center;
+    width:fit-content;
+    height: fit-content;
+    border: 2px solid black;
+    border-radius: 5px;
+  }
+
+  .candidate-deposit-list thead{
+    background-color: gray;
+  }
+
+  .candidate-deposit-list th{
+    background-color: gray;
+    border: 2px solid black;
+    border-radius: 5px;
+  }
+
+  .candidate-deposit-list td{
+    background-color:deepskyblue;
+    border: 2px solid black;
+    border-radius: 5px;
+  }

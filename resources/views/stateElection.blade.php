@@ -11,7 +11,22 @@
 </head>
 <body>
 @include('headerhome')
-
-
+<div class="contentcontainer">
+<div class="card">
+    <h2>District: {{ Auth::user()->stateConstituency }}</h2>
+    <ul>
+        @foreach ($candidatesList as $candidateList)
+            <li>
+                <img class="card-img-top" src="{{ asset('logo')}}/{{$candidateList->party}}.png"/>
+                <div class="card-header">{{ $candidateList->name }}</div>
+                <div class="card-body text-left candidateList">
+                    <p>Candidate Party: {{ $candidateList->party}}</p>
+                </div>
+                <a href="{{ route('voteConfirmation', ['ic' => $candidateList->ic, 'electionType'=> 'State Election']) }}" class="btn">I want to Vote</a>
+            <li>
+        @endforeach
+    </ul>    
+    </div>
+</div>
 </body>
 </html>

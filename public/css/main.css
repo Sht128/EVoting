@@ -1,5 +1,220 @@
+body{
+    padding:0;
+    margin:0;
+    font-family: Arial, Helvetica, sans-serif;
+    text-align:center;
+    color:black;
+    background-color: azure;
+}
+
+.container{
+    display: block;
+    position: relative;
+    align-content: center;
+    height: auto;
+    width:1600px;
+}
+
+.contentcontainer{
+    display: block;
+    background-color: white;
+    position:fixed;
+    align-content: center;
+    height: auto;
+    width:1250px;
+    margin-left:100px;
+    margin-right:200px;
+}
+
 .navbar-dashboard{
     float:right;
     font-size: 24px;
     color:black;
 }
+
+.sidebar {
+    height: 100%;
+    width: 200px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color:darkslategray;
+    overflow-x: hidden;
+    padding-top: 20px;
+  }
+  
+  .main {
+    display: inline-block;
+    margin-left: 200px;
+    margin-right: 200px;
+    height: auto;
+    background-color: white;
+    align-items: center;
+    align-content: center;
+
+  }
+
+  .sidebar a:hover{
+    color: darkcyan;
+  }
+
+.candidateList p{
+    font-size: 14px;
+    font-family: Andale Mono, monospace;
+}
+
+.card ul{
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0%;
+}
+
+    .card ul li{
+        list-style: none;
+    }
+
+.card img{
+    object-fit: cover;
+    width: 140px;
+    height: 80px;
+}
+
+.btn {
+    display: inline-block;
+    font-weight: 550;
+    line-height: 1.5;
+    color: rgb(27, 27, 51);
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    background-color: wheat;
+    border: 1px solid transparent;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    border-radius: 0.25rem;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+.btn:hover{
+    color:black;
+    background-color: gold;
+}
+
+h1{
+    font-weight: bolder;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: large;
+    color: black;
+}
+
+hr {
+    border: 2px solid gray;
+    box-shadow: 2px 2px 5px aliceblue;
+    width: 100%;
+}
+
+.election-progress-title p{
+    font-size: large;
+    font-weight: bolder;
+    float:left;
+}
+
+.election-progress table{
+    border: 2px solid black;
+    width: 100%;
+    height: auto;
+    align-content: center;
+}
+
+    .election-progress thead{
+        background-color: burlywood;
+        color:black;
+    }
+
+    .election-progress tbody{
+        background-color: beige;
+        color: black;
+    }
+
+    .election-progress th{
+        border: 2px solid beige;
+    }
+
+    .election-progress td{
+        border: 2px solid beige;
+    }
+
+.table-state-list table{
+    border:1px solid cornflowerblue;
+    outline: 2px;
+    width: 100%;
+    height: auto;
+    outline-color: cadetblue;   
+    align-content: center;
+    align-self:center;
+}
+
+
+    .table-state-list thead{
+        background-color: darkgrey;
+        color: black;
+    }
+
+    .table-state-list tbody{
+        background-color: lightcyan;
+        color:cadetblue;
+    }
+
+    .table-state-list th{
+        border: 1px solid;
+    }
+
+    .table-state-list td{
+        border: 1px solid black;
+    }
+
+    .table-state-list a{
+        text-decoration: none;
+        color: cadetblue;
+    }
+
+    .table-state-list a:hover{
+        color: darkolivegreen;
+    }
+
+.election-tab {
+    overflow: hidden;
+    border: 1px  #ccc;
+    border-radius: 5px;
+    background-color: #f1f1f1;
+  }
+  
+  .election-tab button {
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
+  }
+  
+  .election-tab button:hover {
+    background-color: #ddd;
+  }
+  
+  .election-tab button.active {
+    background-color: #ccc;
+  }
+  
+  .tabcontent {
+    display: none;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-top: none;
+  }

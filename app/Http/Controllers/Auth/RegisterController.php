@@ -82,12 +82,17 @@ class RegisterController extends Controller
         $voterAuth = ['ic' => $request->ic, 'name' => $request->name, 'district' => $request->district, 'state' => $request->state, 'postcode' => $request->postcode, 'address' => $request->address];
         $candidateAuth = ['ic' => $request->ic, 'name' => $request->name, 'district' => $request->district, 'state' => $request->state, 'postcode' => $request->postcode, 'address' => $request->address];
 
-        if($request->usertype == 'voter')
+        if($request->usertype == 'voter') // If user is voter
         {
+            // Find Voter Record
             $voterData = (array) DB::connection('mysql2')->table('voter')->where($voterAuth)->first();
 
             if($voterData){
                 event(new Registered($voter = $this->createVoter($voterData, $request->all())));
+                
+                // Update Voter Count in Voter Polling District
+                $this->updateStateDistrictVoterCount($voter);
+                $this->updateParliamentalDistrictVoterCount($voter);
 
                 $this->guard()->login($voter);
 
@@ -98,18 +103,30 @@ class RegisterController extends Controller
                 return back()->with('fail', 'Your record does not exist. You are required to enter your registered IC number and address.');
             }
         }
-        else if($request->usertype == 'candidate'){
+
+        else if($request->usertype == 'candidate'){ // If user is candidate
+            // Find Candidate Record
             $candidateData = (array) DB::connection('mysql2')->table('candidate')->where($candidateAuth)->first();
-            
-            if($candidateData){
-            event(new Registered($voter = $this->createVoter($candidateData, $request->all())));
-            $candidate = $this->createCandidate($candidateData, $request->all());
-            $candidateDeposit = $this->updateDepositStatus($candidateData);
+             
+            if($candidateData){ 
+                event(new Registered($voter = $this->createVoter($candidateData, $request->all())));
+                $candidate = $this->createCandidate($candidateData, $request->all());
 
-            $this->guard()->login($voter);
+                    // Update Candidate Deposit Based On Candidate Election Constituency
+                    if($candidate){
+                        $candidateDeposit = $this->updateDepositStatus($candidateData);
+                    }
+                    else{
+                        return back()->with('fail','Unable to register candidate data');
+                    }
 
-            return $this->registered($request, $voter)
-                        ?: redirect($this->redirectPath());
+                // Update Voter Count in Voter Polling District
+                $this->updateStateDistrictVoterCount($voter);
+                $this->updateParliamentalDistrictVoterCount($voter);
+                $this->guard()->login($voter);
+
+                return $this->registered($request, $voter)
+                            ?: redirect($this->redirectPath());
             }
             else{
                 return back()->with('fail', 'Your record does not exist. You are required to enter your registered IC number and address.');
@@ -144,7 +161,7 @@ class RegisterController extends Controller
             'parlimentVoteStatus' => 0,
             'stateVoteStatus' => 0,
             'password' => Hash::make($secondData['password']),
-            'userPrivilege' => '0',
+            'userPrivilege' => '1',
         ]);
     }
 
@@ -168,6 +185,30 @@ class RegisterController extends Controller
             'stateElectionDeposit' => 0,
             'campaignDeposit' => 0,
         ]);
+    }
+
+    /**
+     * @param array $data
+     */
+    protected function updateStateDistrictVoterCount(array $data){
+        $voterState = Voter::select('stateConstituency')->where('ic','=', $data['ic'])->first();
+        if(!is_null($voterState)){
+            $updateVoterCount = StateDistrict::where('districtId','=',$data['stateConstituency'])->increment('voterTotalCount',1);
+
+            return  $updateVoterCount;
+        }
+    }
+
+    /**
+     * @param array $data
+     */
+    protected function updateParliamentalDistrictVoterCount(array $data){
+        $voterState = Voter::select('stateConstituency')->where('ic','=', $data['ic'])->first();
+        if(!is_null($voterState)){
+            $updateVoterCount = StateDistrict::where('districtId','=',$data['paarliamentalConstituency'])->increment('voterTotalCount',1);
+
+            return  $updateVoterCount;
+        }
     }
 
     protected function updateDepositStatus(array $firstData){
