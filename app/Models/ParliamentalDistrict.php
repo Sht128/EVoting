@@ -21,12 +21,20 @@ class ParliamentalDistrict extends Model{
         'voterTotalCount',
         'currentVoteCount',
         'majorityVoteCount',
-        'result',
+        'majorityCandidate',
     ];
 
     public function state(){
         return $this->belongsTo(State::class,'stateId');
     }
 
+    protected $casts = [
+        'voterTotalCount' => 'integer',
+        'currentVoteCount' => 'integer',
+        'majorityVoteCount' => 'integer',
+    ];
+
     public $timestamps = false;
+
+    public $incrementing = false;
 }

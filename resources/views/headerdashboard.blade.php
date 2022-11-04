@@ -13,16 +13,39 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('css/dashboard.css') }}"/>
 
     <div id="sidebar" class="sidebar">
-        <div class="sidebar-nav-item">
-            <a class="nav-link" href="#">Election Progress</a>
-        </div>
-        <div class="sidebar-nav-item">
-            <a class="nav-link" href="{{ route('candidatedepositpage') }}">Candidate Deposit</a>
-        </div>
-        <div class="sidebar-nav-item">
-            <a class="nav-link" href="#">Voter Race Analytics</a>
-        </div>
-        <div class="sidebar-nav-item">
+        <p class="sidebar-title">E-Voting Analytical Dashboard</p><span><br><br><br><br><br><br>
+          <button class="dropdownbtn">Elections &#9660;</button>
+          <div class="dropdown-container">
+              <a href="{{ route('allelections') }}" class="nav-link">All Elections Analytics</a>
+              <a class="nav-link" href="">Voter Race Analytics</a>
+          </div>
+            <button class="dropdownbtn">Voter &#9660;</button>
+            <div class="dropdown-container">
+                <a href="{{ route('allVoterAnalytics') }}" class="nav-link">All Voters Analytics</a>
+                <a class="nav-link" href="{{ route('raceanalytic') }}">Voter Race Analytics</a>
+            </div>
+            <button class="dropdownbtn">Candidate &#9660;</button>
+            <div class="dropdown-container">
+                <a href="" class="nav-link">All Candidate Analytics</a>
+                <a class="nav-link" href="{{ route('candidatedepositpage') }}">Candidate Deposit</a>
+            </div>
             <a class="nav-link" href="{{ route('home') }}">Return to Voting System </a>
-        </div>
+        
     </div>
+
+<script>
+    var dropdown = document.getElementsByClassName("dropdownbtn");
+    var i;
+    
+    for (i = 0; i < dropdown.length; i++) {
+      dropdown[i].addEventListener("click", function() {
+        this.classList.toggle("active");
+        var dropdownContent = this.nextElementSibling;
+        if (dropdownContent.style.display === "block") {
+          dropdownContent.style.display = "none";
+        } else {
+          dropdownContent.style.display = "block";
+        }
+      });
+    }
+</script>

@@ -13,13 +13,13 @@
     @include('headerhome')
     <div class="contentcontainer">
         <div class="election-progress-title">
-        <p>Ongoing Parliment Election State</p><br>
+        <p>Ongoing Parliment Election State</p>
         <hr>
         <div class="election-progress">
             <table class="election-progress">
                 <thead>
                     <tr>
-                        <th>Federal Election District</th>
+                        <th>Federal Election State</th>
                         <th>Total District Count</th>
                         <th>Total Voter Count</th>
                         <th>Current Vote Count</th>

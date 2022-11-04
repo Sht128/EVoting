@@ -60,20 +60,6 @@
                         </div>
 
                         <div class="row mb-3">
-                            <label for="district" class="col-md-4 col-form-label text-md-end">{{_('Voting  District')}}</label>
-                            
-                            <div class="col-md-6">
-                                <input type="text" class="form-control @error('state') is incorrect @enderror" name="district" value="{{ old('district') }}" placeholder="Eg. Pertak"required autocomplete="state" autofocus>
-
-                                @error('state')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
                             <label for="postcode" class="col-md-4 col-form-label text-md-end">{{_('Voting Postcode')}}</label>
                             
                             <div class="col-md-2">
@@ -88,12 +74,12 @@
                         </div>
 
                         <div class="row mb-3">
-                            <label for="address" class="col-md-4 col-form-label text-md-end">{{_('Voting Address')}}</label>
-                            
-                            <div class="col-md-8">
-                                <input type="text" class="form-control @error('state') is incorrect @enderror" name="address" value="{{ old('address') }}" placeholder="Eg. Jalan Aman No.XX"required autocomplete="state" autofocus>
+                            <label for="mobileno" class="col-md-4 col-form-label text-md-end">{{ __('Mobile No.') }}</label>
 
-                                @error('state')
+                            <div class="col-md-6">
+                                <input id="mobileno" type="text" class="form-control @error('email') is-invalid @enderror" name="mobileno" value="{{ old('mobileno') }}" placeholder="+601X-XXX-XXXX" required autocomplete="mobileno">
+
+                                @error('mobileno')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
@@ -102,10 +88,10 @@
                         </div>
 
                         <div class="row mb-3">
-                            <label for="mobileno" class="col-md-4 col-form-label text-md-end">{{ __('Mobile No.') }}</label>
+                            <label for="email" class="col-md-4 col-form-label text-md-end">{{ __('Email Address') }}</label>
 
                             <div class="col-md-6">
-                                <input id="mobileno" type="text" class="form-control @error('email') is-invalid @enderror" name="mobileno" value="{{ old('mobileno') }}" placeholder="+601X-XXX-XXXX" required autocomplete="mobileno">
+                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" placeholder="hello@example.com" required autocomplete="email">
 
                                 @error('email')
                                     <span class="invalid-feedback" role="alert">
@@ -135,19 +121,7 @@
                             <div class="col-md-8">
                                 <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
                             </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <label for="password-confirm" class="col-md-4 col-form-label text-md-end">{{ __('User Type') }}</label>
-
-                            <div class="col-md-6">
-                                <select id="usertype" class="form-control" name="usertype" required autocomplete="new-password">
-                                    <option value="voter" name="voter">Voter</option>
-                                    <option value="candidate" name="candidate">Candidate</option>
-                                </select>
-                            </div>
-                        </div>
-                        
+                        </div>                        
 
                         <div class="row mb-0">
                             <div class="col-md-6 offset-md-4">

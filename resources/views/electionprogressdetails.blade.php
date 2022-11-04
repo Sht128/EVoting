@@ -26,10 +26,10 @@
                 <tbody>
                     @foreach($districts as $district)
                     <tr>
-                        <td>{{ $district->stateId}}</td>
+                        <td>{{ $district->districtId}}</td>
                         <td>{{ $district->voterTotalCount}}</td>
                         <td>{{ $district->currentVoteCount}}</td>
-                        <td><a href="{{ route('electionprogress', ['districtid' => $district->stateId]) }}">View</a></td>
+                        <td><a href="{{ route('electionprogress', ['districtid' => $district->districtId, 'election' => $electiontype]) }}">View</a></td>
                     </tr>
                     @endforeach
                 </tbody>

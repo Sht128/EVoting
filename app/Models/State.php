@@ -23,6 +23,14 @@ class State extends Model{
         'result',
     ];
 
+    public $incrementing = false;
+
+    protected $casts = [
+        'parliamentalDistrictCount' => 'integer',
+        'stateDistrictCount' => 'integer',
+        'majorityVoteCount' => 'integer',
+    ];
+
     public function stateConstituencies(){
 
         return $this->hasMany(StateDistrict::class, 'stateId');

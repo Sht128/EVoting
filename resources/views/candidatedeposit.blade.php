@@ -12,9 +12,9 @@
 <body>
     @include('headerdashboard')
     <div class="main">
-        <form action="" method="POST">
+        <form class="d-inline" action="{{ route('candidatedepositfilter') }}" method="POST">
             @csrf
-            <div class="row mb-3">
+            <div class="row mb-3 ms-auto">
                 <label for="password-confirm" class="col-md-4 col-form-label text-md-end">{{ __('Filter: ') }}</label>
 
                 <div class="col-md-4">
@@ -22,10 +22,14 @@
                         <option value="ongoing" name="ongoing">Ongoing Election Only</option>
                         <option value="done" name="done">Finished Election Only</option>
                         <option value="lostdeposit" name="lostdeposit">Lost Deposit</option>
+                        <option value="parliamental" name="parliamental">Federal Election Only</option>
+                        <option value="state" name="state">State Election Only</option>
                     </select>
+                    
                 </div>
+                <button type="submit" class="btn btn-primary">Apply</button>
             </div>
-        <button type="submit" class="btn btn-primary center">Apply</button>
+        
         </form><br><br>
 
         <div class="candidate-deposit-list">
@@ -44,10 +48,26 @@
                     @foreach($candidateList as $candidate)
                     <tr>
                         <td>{{ $candidate->name}}</td>
-                        <td>{{ $candidate->parliamentalConstituency}}</td>
-                        <td>{{ $candidate->stateConstituency}}</td>
-                        <td>{{ $candidate->parliamentElectionDeposit}}</td>
+                        @if(!empty($candidate->parliamentalConstituency))
+                            <td>{{ $candidate->parliamentalConstituency}}</td>
+                        @else
+                            <td>No Parliamental Seat Available</td>
+                        @endif
+                        @if(!empty($candidate->stateConstituency))
+                            <td>{{ $candidate->stateConstituency}}</td>
+                        @else
+                            <td>No State Seat Available</td>
+                        @endif
+                        @if(!empty($candidate->parliamentElectionDeposit))
+                            <td>{{ $candidate->parliamentElectionDeposit}}</td>
+                        @else
+                            <td>No Deposit Available</td>
+                        @endif
+                        @if(!empty($candidate->stateElectionDeposit))
                         <td>{{ $candidate->stateElectionDeposit}}</td>
+                        @else
+                            <td>No Deposit Available</td>
+                        @endif
                     </tr>
                     @endforeach
                 </tbody>

@@ -1,3 +1,8 @@
+html,body{
+  width: 100%;
+  height: 100%;
+}
+
 .sidebar {
     height: 100%;
     width: 195px;
@@ -10,6 +15,25 @@
     padding-top: 20px;
   }
 
+  .sidebar button{
+    background: none;
+    border: none;
+    padding-left: 15px;
+    width:100%;
+    text-align: left;
+    background-color: darkslategray;
+    color:dodgerblue;
+  }
+
+  .sidebar .dropdownbtn{
+    font-size: 20px;
+  }
+
+  .sidebar a:hover,button:hover,button:active{
+      color: darkcyan;
+      background-color: aquamarine;
+    }
+
   p{
     color: black;
   }
@@ -18,16 +42,63 @@
     margin-left: 195px;
   }
 
+  .main .title{
+    align-self: center;
+    position: fixed;
+    font-weight: bolder;
+    font-size: 25px;
+    height: 20px;
+  }
+  .main .chartcontainer{
+    display: block;
+    position: relative;
+    width: 1000px;
+    height:200px;
+    margin-top: 50px;
+    border-style: solid;
+    border: 8px;
+    border-radius: 8px;
+    border-color: black;
+  }
+
+  .main a{
+    padding-left: 8px;
+    list-style: none;
+    color: black;
+    list-style: none;
+    font-weight: bolder;
+  }
+
+  .main button{
+    background-color:silver;
+  }
+
+  .sidebar-title{
+    align-content: center;
+    position: absolute;
+    padding-left: 15px;
+    font-size: 24px;
+    font-weight: bolder;
+    color:lightcyan;
+  }
+
   .sidebar-nav-item{
     position: relative;
     width:200px;
     height: 40px;
   }
 
-  .sidebar a:hover{
-    color: darkcyan;
-    background-color: aquamarine;
-  }
+.dropdown-container {
+  display: none;
+  background-color:lightseagreen;
+  padding-left: 8px;
+  width: 100%;
+}
+
+.fa-caret-down {
+  float: right;
+  padding-right: 8px;
+}
 
 .candidate-deposit-list{
   align-content: center;
@@ -39,6 +110,7 @@
     height: fit-content;
     border: 2px solid black;
     border-radius: 5px;
+    margin-left: 15%;
   }
 
   .candidate-deposit-list thead{
@@ -56,3 +128,72 @@
     border: 2px solid black;
     border-radius: 5px;
   }
+
+  .table-race-analytics table{
+    border:1px solid cornflowerblue;
+    outline: 2px;
+    width: 100%;
+    height: auto;
+    outline-color: cadetblue;   
+    align-content: center;
+    align-self:center;
+}
+
+
+    .table-race-analytics thead{
+        background-color: darkgrey;
+        color: black;
+    }
+
+    .table-race-analytics tbody{
+        background-color: lightcyan;
+        color:cadetblue;
+    }
+
+    .table-race-analytics th{
+        border: 1px solid;
+    }
+
+    .table-race-analytics td{
+        border: 1px solid black;
+    }
+
+    .table-race-analytics a{
+        text-decoration: none;
+        color: cadetblue;
+    }
+
+    .table-race-analytics a:hover{
+        color: darkolivegreen;
+    }
+
+    .election-progress-title p{
+      font-size: large;
+      font-weight: bolder;
+      float:left;
+  }
+  
+  .election-progress table{
+      border: 2px solid black;
+      width: 100%;
+      height: auto;
+      align-content: center;
+  }
+  
+      .election-progress thead{
+          background-color: burlywood;
+          color:black;
+      }
+  
+      .election-progress tbody{
+          background-color: beige;
+          color: black;
+      }
+  
+      .election-progress th{
+          border: 2px solid beige;
+      }
+  
+      .election-progress td{
+          border: 2px solid beige;
+      }

@@ -4,13 +4,18 @@ namespace App\Http\Controllers;
 use Auth;
 use Session;
 use DB;
+use Mail;
 use App\Models\Voter;
 use App\Models\Candidate;
 use App\Models\Vote;
 use App\Models\State;
 use App\Models\StateDistrict;
 use App\Models\ParliamentalDistrict;
+use App\Models\VoterToken;
+use App\Notifications\SuccessFulVerification;
+use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
+use Illuminate\Encryption\Encrypter;
 
 class VoteController extends Controller
 {
@@ -26,7 +31,6 @@ class VoteController extends Controller
                                 ->join('voter', 'candidate.parliamentalConstituency', '=', 'voter.parliamentalConstituency')
                                 ->where('voter.ic', Auth::user()->ic)
                                 ->get();
-
 
             return view('federalElection')->with(compact('candidatesList'));
         }
@@ -57,14 +61,15 @@ class VoteController extends Controller
     public function voteConfirmation(Request $request){
         $candidateIc = $request->ic;
         $partyList = ['PN' => 'Perikatan Nasional', 'PH' => 'Pakatan Harapan', 'BN' => 'Barisan Nasional', 'MUDA' => 'Malaysian United Democratic Alliance', 'Independent' => 'Independent'];
-        if($request->electionType == 'federalElection'){
+        if($request->electionType == 'Federal Election'){
             $electionSeat = Auth::user()->parliamentalConstituency;
         }
         else{
             $electionSeat = Auth::user()->stateConstituency;
         }
         $candidate = Candidate::where('ic','=',$candidateIc)->first();
-
+        Session::put('electionType',$request->electionType);
+        Session::put('candidate',$request->ic);
         $candidate->party = $partyList[$candidate->party];
         return view('voteConfirmation')->with(compact('candidate'))->with('seating', $electionSeat)->with('electionType',$request->electionType)->with('party',$partyList);
     }
@@ -87,30 +92,30 @@ class VoteController extends Controller
                     return redirect('home')->with('success','You have casted your vote!');
                 }
                 else{
-                    return redirect('voteConfirmation')->with('fail, Unable to create voter vote');
+                    return redirect('home')->with('fail', 'Unable to create voter Federal Vote');
                 }
             }
-            else
+            elseif($electionType == 'State Election')
             {
                 $updateVote = $this->verifyStateElectionVotingProgress($request);
                 if($updateVote){
                     $this->updateStateVotingStatus($request);
-                    return redirect('home')->with('success','You have casted your {{$request->electionType}} vote!');
+                    return redirect('home')->with('success','You have casted your vote!');
                 }
                 else{
-                    return redirect('home')->with('fail', 'Unable to create voter vote')->with('seating',Auth::user()->stateConstituency);
+                    return redirect('home')->with('fail', 'Unable to create voter State Vote');
                 }
             }
         }
         else{
-            return redirect('home')->with('fail', 'Voter Has Already Voted. You are not allowed to cast more than one of same type ofvote');
+            return redirect('home')->with('fail', 'Voter Has Already Voted. You are not allowed to cast more than one of same type of vote');
         }
     }
 
     protected function verifyVoterVoteStatus(Request $request){
         if ($request->electionType == "Federal Election"){
             // Verify User Voting Status
-            $voteEligibility = Voter::where('ic','=',Auth::user()->ic)->where('parliamentalVoteStatus','=',0)->first();
+            $voteEligibility = Voter::where('ic','=',Auth::user()->ic)->where('parlimentVoteStatus','=',0)->first();
             return $voteEligibility;
         }
         else{
@@ -120,27 +125,34 @@ class VoteController extends Controller
     }
 
     protected function verifyStateElectionVotingProgress(Request $request){
-        $isVoted = $this->updateStateElectionVoteProgress($request);
+        $isVoted = $this->updateStateElectionVoteStatus();
         // Update Voter Count Success
         if($isVoted){
+            $seating = Auth::user()->stateConstituency;
             // Update Voting Status
             $newVote = $this->createVote($request);
             if($newVote){
-                return $this->updateCandidateVoteCount($request);
+                $this->updateCandidateVoteCount($request);
+                return $this->updateElectionProgress($request,$seating);
             }
-            return true;
+            else{
+                return false;
+            }
         }
 
     }
 
     protected function verifyFederalElectionVotingProgress(Request $request){
-        $isVoted = $this->updateFederalElectionVoteProgress($request);
+        $isVoted = $this->updateFederalElectionVoteStatus();
         // Update Voter Count Success
         if($isVoted){
+            $seating = Auth::user()->parliamentalConstituency;
             // Update Voting Status
             $newVote = $this->createVote($request);
             if($newVote){
-                return $this->updateCandidateVoteCount($request);
+                $this->updateCandidateVoteCount($request);
+                return $this->updateElectionProgress($request,$seating);
+
             }
             else{
                 return false;
@@ -154,187 +166,208 @@ class VoteController extends Controller
     protected function createVote(Request $request){
         if($request->electionType == 'Federal Election'){
             $seating = Auth::user()->parliamentalConstituency;
-            $updateUserVoteStatus = Voter::where('ic','=',Auth::user()->ic)->increment('parlimentVoteStatus',1);
+            Voter::where('ic','=',Auth::user()->ic)->increment('parlimentVoteStatus',1);
         }
         else{
             $seating = Auth::user()->stateConstituency;
-            $updateUserVoteStatus = Voter::where('ic','=',Auth::user()->ic)->increment('parlimentVoteStatus',1);
+            Voter::where('ic','=',Auth::user()->ic)->increment('stateVoteStatus',1);
         }
 
-        $user = Auth::user();
         return Vote::insert([
-            'voterId' => Auth::user()->ic,
-            'candidateId' => $request->ic,
+            'voterId' => encrypt(Auth::user()->ic),
+            'candidateId' => encrypt($request->ic),
             'seatingId' => $seating,
             'electionType' => $request->electionType,
         ]);
     }
 
-    protected function updateStateElectionVoteProgress(Request $request){
+    protected function updateStateElectionVoteStatus(){
         if(Auth::user()){
-            $userIc = Auth::user()->ic;
-            // Find Voter Election Constituency
-            $seating = Auth::user()->stateConstituency;
-            if($seating){
+            $verified = Voter::where(['ic' => Auth::user()->ic,'is_statevote_verified'=>1])->first();
+                if($verified){
+                // Find Voter Election Constituency
+                $seating = Auth::user()->stateConstituency;
                 // Verify If The District Vote Has Not Ended
                 $votingDistrict = StateDistrict::where('districtId','=',$seating)->first();
-                if($votingDistrict->votingStatus == 0 && $votingDistrict->currentVoteCount < $votingDistrict->voterTotalCount){
-                    $votingDistrict->increment('currentVoteCount',1);
-                    // Get New Vote Count
-                    $newVoteCount = StateDistrict::where('districtId','=',$seating)->first();
-
-                    if($newVoteCount->currentVoteCount == $newVoteCount->totalVoterCount){
-                        // Close District Voting Status
-                        StateDistrict::where('districtId','=',$districtId)->increment('votingStatus',1); 
-                        // Update Majority Vote Count
-                        $majorityCandidate  = DB::table('candidate')
-                                              ->select('candidate.ic','candiate.stateVoteCount')
-                                              ->join('statedistrict', 'candidate.ic','=','statedistrict.majorityCandidate')
-                                              ->where('candidate.stateConstituency','=',$seating)
-                                              ->first();
-                        StateDistrict::where('districtId','=',$seating)->update(['majorityVoteCount' => $majorityCandidate->stateVotecount]);
-                    }                   
+                if($votingDistrict->votingStatus == 0 && ($votingDistrict->currentVoteCount < $votingDistrict->voterTotalCount)){         
                     return true;
                 }
                 else{
                     return false;
                 }
             }
+            else{
+                return false;
+            }
+        }
+        else{
+            return false;
         }
     }
 
-    protected function updateFederalElectionVoteProgress(Request $request){
+    protected function updateFederalElectionVoteStatus(){
         if(Auth::user()){
-            $userIc = Auth::user()->ic;
-            // Find Voter Election Constituency
-            $seating = Auth::user()->parliamentalConstituency;
-            if($seating){
+            $verified = Voter::where(['ic' => Auth::user()->ic,'is_parlimentvote_verified'=>1])->first();
+            if($verified){
+                // Find Voter Election Constituency
+                $seating = Auth::user()->parliamentalConstituency;
                 // Verify If The District Vote Has Not Ended
                 $votingDistrict = ParliamentalDistrict::where('districtId','=',$seating)->first();
             
                 // Verify Remaining Voter Count
-                if($votingDistrict->votingStatus == 0 && $votingDistrict->currentVoteCount < $votingDistrict->voterTotalCount){
-                    $votingDistrict->increment('currentVoteCount',1);
-                    // Get New Vote Count
-                    $newVoteCount = ParliamentalDistrict::where('districtId','=',$seating)->first();
-
-                    if($newVoteCount->currentVoteCount == $newVoteCount->totalVoterCount){
-                        // Close District Voting Status
-                        ParliamentalDistrict::where('districtId','=',$districtId)->increment('votingStatus',1); 
-                        // Update Majority Vote Count
-                        $majorityCandidate  = DB::table('candidate')
-                                              ->select('candidate.ic','candiate.parliamentalVoteCount')
-                                              ->join('parliamentaldistrict', 'candidate.ic','=','parliamentaldistrict.majorityCandidate')
-                                              ->where('candidate.parliamentalConstituency','=',$seating)
-                                              ->first();;
-
-                        ParliamentalDistrict::where('districtId','=',$seating)->update(['majorityVoteCount'=>$majorityCandidate->parliamentalVoteCount]);
-                        return true;
-                    }
-                    return false;
+                if($votingDistrict->votingStatus == 0 && ($votingDistrict->currentVoteCount < $votingDistrict->voterTotalCount)){
+                    return true;
                 }
                 else{
                     return false;
                 }
             }
+            else{
+                return false;
+            }
+        }
+        else{
+            return false;
         }
     }
 
     protected function updateCandidateVoteCount(Request $request){
-        if (Auth::user()){
-
             // Increment Candidate Vote Count
             if ($request->electionType == 'Federal Election'){
-                $updateVoteCount = Candidate::where('ic','=',$request->ic)->increment('parliamentalVoteCount',1);
+                $votes = Vote::where('seatingId','=',Auth::user()->parliamentalConstituency)->get();
+                foreach($votes as $vote){
+                    $count = 0;
+                    try{
+                        $candidate  = decrypt($vote->candidateId);
+                        if($candidate == $request->ic){
+                            $count += 1;
+                        }
+                    }
+                    catch(DecryptException $e){
+                        echo('Error with Decryption,'.$e);
+                    }
+                }
+                 $updateVoteCount = Candidate::where('ic','=',$request->ic)->update(['parliamentalVoteCount' => $count]);
+
                 return $updateVoteCount;
             }
             else{
+                $votes = Vote::where('seatingId','=',Auth::user()->stateConstituency)->get();
+                foreach($votes as $vote){
+                    $count = 0;
+                    $candidate  = decrypt($vote->candidateId);
+                    if($candidate == $request->ic){
+                        $count += 1;
+                    }
+                }
                 $updateVoteCount = Candidate::where('ic','=',$request->ic)->increment('stateVoteCount',1);
                 return $updateVoteCount;
             }
-        }
     }
     
-    protected function updateElectionWinner(Request $request){
-        if (Auth::user()){
-            $electionType = $request->electionType;
-            if($electionType == 'Federal Election'){
-                $seating = Auth::user()->parliamentalConstituency;
+    protected function updateElectionProgress(Request $request, $seating){
+        $electionType = $request->electionType;
+        if($electionType == 'Federal Election'){
+            // Update Districts Vote Count
+            $updateVoteCount = ParliamentalDistrict::where('districtId','=',$seating)->increment('currentVoteCount',1);
 
-                // Find If Candidate Has Gathered Majority Vote
-                $totalVoterCount = ParliamentalDistrict::select('totalVoterCount')->where('districtId','=',$seating)->first();
-                $majorityVoteRequired = $totalVoterCount / 2;
-                $candidate = Candidate::where(
-                    ['parliamentalConstituency','=', $seating],
-                    ['parliamentalVoteCount','>',$majorityVoteRequired],
-                )->first();
+            // Find if collected Votes tally with Registered Vote Amount   
+            $voteCount = Vote::where([
+                'seatingId' => $seating,
 
-                if($candidate){
-                    // Update Election Winner For Parliamental Constituency
-                    $setWinner = ParliamentalDistrict::where('districtId','=',$seating)->update(['majorityCandidate','=',$candidate->ic]);
+            ])->get()->count();
+            $district = ParliamentalDistrict::where('districtId','=',$seating)->first();
+            if($voteCount == $district->currentVoteCount){
+                if($voteCount == $district->voterTotalCount){ // Check If All Voter in District has Voted
+                    $majorityVoteRequired = $district->voterTotalCount / 2;
+                    $district->increment('votingStatus',1); // Close District Voting Status
+                    $candidate = Candidate::where(
+                        ['parliamentalConstituency','=', $seating],
+                        ['parliamentalVoteCount','>',$majorityVoteRequired],
+                    )->first();
+
+                    if($candidate){
+                        // Update Election Winner For Parliamental Constituency
+                        $district->update(['majorityCandidate','=',$candidate->ic]);
+                        $district->update(['majorityVoteCount'=>$candidate->parliamentalVoteCount]);
+                    }
+                    else{
+                        return false;
+                    }
                 }
             }
-            else{
-                $seating = Auth::user()->stateConstituency;
+            return $updateVoteCount;
+        }
+        elseif($electionType == 'State Election'){
+            // Update Districts Vote Count
+            $updateVoteCount = StateDistrict::where('districtId','=',$seating)->increment('currentVoteCount',1);
+             // Find if collected Votes tally with Registered Vote Amount
+             $district = StateDistrict::where('districtId','=',$seating)->first();
+             $voteCount = Vote::where([
+                 'seatingId' => $seating,
+ 
+             ])->count();
 
-                // Find If Candidate Has Gathered Majority Vote
-                $totalVoterCount = StateDistrict::select('totalVoterCount')->where('districtId','=',$seating)->first();
-                $majorityVoteRequired = $totalVoterCount / 2;
-                $candidate = Candidate::where(
-                    ['stateConstituency','=', $seating],
-                    ['stateVoteCount','>',$majorityVoteRequired],
-                )->first();
+            if($voteCount == $district->currentVoteCount){
+                if($voteCount == $district->voterTotalCount){ // Check If All Voter in District has Voted
+                    $majorityVoteRequired = $district->voterTotalCount / 2;
+                    $district->increment('votingStatus',1); // Close District Voting Status
+                    $candidate = Candidate::where(
+                        ['stateConstituency','=', $seating],
+                        ['stateVoteCount','>',$majorityVoteRequired],
+                    )->first();
 
-                if($candidate){
-                    // Update Election Winner For Parliamental Constituency
-                    $setWinner = StateDistrict::where('districtId','=',$seating)->update(['majorityCandidate','=',$candidate->ic]);
+                    if($candidate){
+                        // Update Election Winner For Parliamental Constituency
+                        $district->update(['majorityCandidate','=',$candidate->ic]);
+                        $district->update(['majorityVoteCount'=>$candidate->parliamentalVoteCount]);
+                    }
+                    else{
+                        return false;
+                    }
                 }
             }
+            return $updateVoteCount;
         }
     }
 
     protected function updateStateVotingStatus(Request $request){
-        if (Auth::user()){
-            // Check total constituencies that has completed voting
-            $parliamentalCount = ParliamentalDistrict::select('votingStatus')->where([
-                'votingStatus' => 1,
-                'stateId' => Auth::user()->state,
-                ])->count();
+        // Check total constituencies that has completed voting
+        $parliamentalCount = ParliamentalDistrict::select('votingStatus')->where([
+            'votingStatus' => 1,
+            'stateId' => Auth::user()->state,
+            ])->count();
 
-            $stateCount = StateDistrict::select('votingStatus')->where([
-                'votingStatus' => 1,
-                'stateId' => Auth::user()->state,
-                ])->count();
+        $stateCount = StateDistrict::select('votingStatus')->where([
+            'votingStatus' => 1,
+            'stateId' => Auth::user()->state,
+            ])->count();
 
-            // Get Total Districts Count
-            $state = State::where('stateId','=',Auth::user()->state)->first();
+        // Get Total Districts Count
+        $state = State::where('stateId','=',Auth::user()->state)->first();
 
-            if($parliamentalCount == $state->parliamentalDistrictCount && $stateCount == $state->stateDistrictCount){
-                // Update State Voting Status As Done
-                State::where('stateId','=',Auth::user()->state)->increment('votingStatus',1);
+        if($parliamentalCount == $state->parliamentalDistrictCount && $stateCount == $state->stateDistrictCount){
+            // Update State Voting Status As Done
+            $state->increment('votingStatus',1);
 
-                // Announce major coalition result for State Election
-                $stateDistricts = StateDistrict::where('stateId','=',Auth::user()->state)->get();
-                $stateWinner = DB::table('candidate')
-                               ->select('select * from candidate')
-                               ->join('statedistrict', 'candidate.ic','=','statedistrict.majorityCandidate')
-                               ->where('state','=',$state->stateId)
-                               ->get();
+            // Announce major coalition result for State Election
+            $stateDistricts = StateDistrict::where('stateId','=',Auth::user()->state)->get();
+            $stateWinner = DB::table('candidate')
+                            ->select('select * from candidate')
+                            ->join('statedistrict', 'candidate.ic','=','statedistrict.majorityCandidate')
+                            ->where('state','=',$state->stateId)
+                            ->get();
+            $parties =Candidate::join('statedistrict','candidate.ic','=','statedistrict.majorityCandidate')->groupBy('party')->select('party', DB::raw('count(*) as total'))->where('state','=',$state->stateId)->pluck('total','party')->all();
 
-                // Get Each Party Count
-                $majorityParty = $stateWinner->select('party')->distinct()->get();
-                foreach($majorityParty as $party){
-                    $partyWinCount = $stateWinner->where('party','=',$party)->count();
-                    if($partyWinCount > ($state->stateDistrictCount/2)){
-                        return $majorityParty = $party;
-                    }
-                }
+            $majorityDistrict = $state->stateDistrictCount / 2;
+            foreach($parties as $party){
                 
-                $updateCoalitionWinner = State::where('stateId','=',Auth::user()->state)->update(['majorityCoalition' => $majorityPaarty]);
-
-
-
+                if($party->total > $majorityDistrict){
+                    $majorityParty = $party->party;
+                }
             }
+            
+            $updateCoalitionWinner = State::where('stateId','=',Auth::user()->state)->update(['majorityCoalition' => $majorityParty]);
         }
     }
 }

@@ -52,6 +52,9 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('viewelectionprogress')}}">View Election Progress</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('viewelectionresults')}}">View Election Results</a>
+                        </li>
                         </ul>
 
                     <!-- Right Side Of Navbar -->
@@ -79,6 +82,7 @@
                                     @if(Auth::user()->userPrivilege == 0) 
                                     <a class="dropdown-item" href="{{route('dashboard')}}">Admin Dashboard</a>
                                     @endif
+                                    <a class="dropdown-item" href="{{ route('voterprofile') }}">Vote History</a>
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">

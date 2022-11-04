@@ -11,6 +11,7 @@
 
 <body>
 @include('headerhome')
+    @if(Auth::user()->parlimentVoteStatus == 0)
     <div class="contentcontainer">
         <h2>District: {{ Auth::user()->parliamentalConstituency }}</h2>
         <div class="card" style="align: center">
@@ -28,5 +29,13 @@
         </ul>    
         </div>
     </div>
+    @elseif(Auth::user()->parlimentVoteStatus == 1)
+    <div class="vote-profile" style="align:center">
+        <h2>Vote Casted!</h2>
+        <p>It seems you have already cast your vote for this election</p>
+        <span><p>You are not allow to cast any vote continuing further, but you are able to check on current election progress provided by our voting system</p>
+        <button class="btn-primary"><a href="{{ route('viewelectionprogress') }}">View Election Progress</a></button>
+    </div>
+    @endif
 </body>
 </html>

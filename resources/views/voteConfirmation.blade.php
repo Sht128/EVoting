@@ -17,7 +17,7 @@
             <p class="candidateList"> You are voting for {{$seating}}, {{Auth::user()->state}}</p>
             <p class="candidateList"> Your vote will be submitted to candidate listed below, do you want to proceed?</p>
             <a href="{{ url()->previous() }}" class="btn btn-secondary">Back</a>
-            <a href="{{ route('castVote', ['ic'=> $candidate->ic, 'electionType' => $electionType]) }}"><button type="submit" class="btn">Confirm my Vote</button></a></br></br>
+            <a href="{{ route('verifyVote', ['ic'=> $candidate->ic, 'electionType' => $electionType]) }}"><button type="submit" class="btn">Confirm my Vote</button></a></br></br>
             <table class="table table-striped table-size">
                 <thead>
                     <tr>
