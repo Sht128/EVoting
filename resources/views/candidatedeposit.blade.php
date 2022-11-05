@@ -19,7 +19,6 @@
 
                 <div class="col-md-4">
                     <select id="depositfilter" class="form-control" name="depositfilter" required autocomplete="new-password">
-                        <option value="ongoing" name="ongoing">Ongoing Election Only</option>
                         <option value="done" name="done">Finished Election Only</option>
                         <option value="lostdeposit" name="lostdeposit">Lost Deposit</option>
                         <option value="parliamental" name="parliamental">Federal Election Only</option>

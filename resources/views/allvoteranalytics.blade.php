@@ -26,7 +26,7 @@
         <script>
             var context = document.getElementById('chart').getContext('2d');
             var chart = new Chart(context, {
-                type: 'bar',
+                type: 'pie',
                 data: {
                         labels: {!!json_encode($chart->labels)!!},
                         datasets: [
@@ -35,13 +35,15 @@
                                     data: {!!json_encode($chart->dataset)!!},
                                     backgroundColor: [
                                     'rgba(255, 99, 132, 1)',
-                                    'rgba(54, 162, 235, 0.2)',
-                                    'rgba(255, 206, 86, 0.2)',
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(255, 206, 86, 1)',
+                                    'rgba(56, 9, 159, 0.1)',
                                 ],
                                 borderColor: [
                                     'rgba(255,99,132,1)',
                                     'rgba(54, 162, 235, 1)',
                                     'rgba(255, 206, 86, 1)',
+                                    'rgba(56, 9, 159, 0.1)',
                                 ],
                                 borderWidth: 1
                                                 }

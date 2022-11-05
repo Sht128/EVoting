@@ -29,9 +29,11 @@
                         <td>{{ $district->districtId}}</td>
                         <td>{{ $district->voterTotalCount}}</td>
                         <td>{{ $district->currentVoteCount}}</td>
-                        <td><a href="{{ route('electionprogress', ['districtid' => $district->districtId, 'election' => $electiontype]) }}">View</a></td>
+                        <td><a href="{{ route('electionprogress', ['districtId' => $district->districtId, 'election' => $electiontype]) }}">View</a></td>
                     </tr>
                     @endforeach
                 </tbody>
+            </table>
         </div>
+        <button class="btn btn-primary"><a href="{{ url()->previous() }}">Back to Previous</button>
     </div>

@@ -54,10 +54,10 @@ class ElectionController extends Controller
             $parlimentVotingStatus = "Not Done";
         }
 
-        $states = State::where('votingStatus','=',1);
+        $states = State::where('stateVotingStatus','=',1)->get();
         foreach($states as $state){
-           $totalDistrict = StateDistrict::select('currentVoteCount',DB::raw('count(*) as total'))->where('stateId','=',$state->stateId)->get();
-           $state->totalVoterCount = $totalDistrict->total;
+           $totalDistrict = StateDistrict::where('stateId','=',$state->stateId)->sum('currentVoteCount');
+           $state->totalVoterCount = $totalDistrict;
         }
 
         return view('viewelectionresults')->with(compact('parliments'))->with(compact('states'))->with(compact('federalparties'))->with('federalElection',$parlimentVotingStatus);
@@ -75,6 +75,15 @@ class ElectionController extends Controller
         $chart->dataset = (array_values($parties));
 
         return view('electionprogress')->with(compact('chart'))->with('seating',$request->districtId);
+    }
+
+    /**
+     * Return State Districts List
+     */
+    public function stateDistricts(Request $request){
+        $states = State::orderBy('districtId')->get();
+
+        return view('viewelectiondistricts')->with(compact('states'));
     }
 
     /**
@@ -164,7 +173,7 @@ class ElectionController extends Controller
 
     public function electionProgressDetails(Request $request){
         if ($request->election == 'Federal Election'){
-            $candidates = (array) Candidate::select('name','parliamentalVoteCount')->where('parliamentalConstituency','=',$request->districtid)->pluck('parliamentalVoteCount','name')->all();
+            $candidates = (array) Candidate::select('name','parliamentalVoteCount')->where('parliamentalConstituency','=',$request->districtId)->pluck('parliamentalVoteCount','name')->all();
             $district = ParliamentalDistrict::where('districtId','=',$request->districtId)->first();
             $chart = new Chart;
             $chart->labels = (array_keys($candidates));
@@ -178,7 +187,7 @@ class ElectionController extends Controller
             return view('electionprogress')->with(compact('chart'))->with(compact('district'));
         }
         elseif($request->election == 'State Election'){
-            $candidates = Candidate::select('name','stateVoteCount')->where('stateConstituency','=',$request->districtid)->pluck('stateVoteCount','name')->all();
+            $candidates = Candidate::select('name','stateVoteCount')->where('stateConstituency','=',$request->districtId)->pluck('stateVoteCount','name')->all();
             $district = StateDistrict::where('districtId','=',$request->districtId)->get();
             $chart = new Chart;
             $chart->labels = (array_keys($candidates));

@@ -13,6 +13,7 @@
 <body>
     @include ('headerdashboard')
         <div class="main">
+            <a href="{{ url()->previous() }}" class="btn btn-secondary">Return to Previous Page</a>
             <div class="election-progress">
                 <div class="election-progress-title">
                     <p>Federal Districts List</p>
@@ -21,11 +22,10 @@
                     <thead>
                         <tr>
                             <th>District Name</th>
-                            <th>State Name</th>
-                            <th>Total Voter Count</th>
-                            <th>Current Vote Count</th>
-                            <th>Remaining Votes</th>
-                            <th>Voting Status</th>
+                            <th>State</th>
+                            <th>Total Vote Count</th>
+                            <th>Majority Candidate</th>
+                            <th>View Voter Race Analytics</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -33,15 +33,9 @@
                         <tr>
                         <td>{{ $parliamental->districtId}}</td>
                         <td>{{ $parliamental->stateId}}</td>
-                        <td>{{ $parliamental->voterTotalCount}}</td>
                         <td>{{ $parliamental->currentVoteCount}}</td>
-                        <td>{{ $parliamental->remainingVote}}</td>
-                            @if($parliamental->votingStatus == 0)
-                            <td>Still Ongoing</td>
-                            @else
-                            <td>Finished Voting</td>
-                            @endif
-                        </tr>
+                        <td>{{ $parliamental->majorityCandidate}}</td>
+                        <td><a href="{{ route('districtVoterRace',['districtId'=>$parliamental->districtId, 'electionType'=>'Federal Election'])}}">View</a></td>
                         @endforeach
                     </tbody>
                 </table>
@@ -52,11 +46,10 @@
                     <thead>
                         <tr>
                             <th>District Name</th>
-                            <th>State Name</th>
-                            <th>Total Voter Count</th>
-                            <th>Current Vote Count</th>
-                            <th>Remaining Votes</th>
-                            <th>Voting Status</th>
+                            <th>State</th>
+                            <th>Total Vote Count</th>
+                            <th>Majority Candidate</th>
+                            <th>View Voter Race Analytics</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -64,18 +57,14 @@
                         <tr>
                         <td>{{ $state->districtId}}</td>
                         <td>{{ $state->stateId}}</td>
-                        <td>{{ $state->voterTotalCount}}</td>
                         <td>{{ $state->currentVoteCount}}</td>
-                        <td>{{ $state->remainingVote}}</td>
-                            @if($state->votingStatus == 0)
-                            <td>Still Ongoing</td>
-                            @else
-                            <td>Finished Voting</td>
-                            @endif
-                        </tr>
+                        <td>{{ $state->majorityCandidate}}</td>
+                        <td><a href="{{ route('districtVoterRace',['districtId'=>$state->districtId, 'State Election'])}}">View</a></td>
                         @endforeach
                     </tbody>
+                </table>
                 </div>
             </div>
-</body>
-</html>
+
+        </div>
+

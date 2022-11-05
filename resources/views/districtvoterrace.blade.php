@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf_token" content="{{ csrf_token() }}">
     <meta http-equiv="X-UA-Compatible" content="ie-edge">
-    <title>State District Voter Race Analysis Page</title>
+    <title>Parliament District Voter Race Analysis Page</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
@@ -14,9 +14,9 @@
     @include ('headerdashboard')
         <div class="main">
             <a href="{{ url()->previous() }}" class="btn btn-secondary">Return to Previous Page</a>
-            <h2>State District Voter Race Chart Analysis</h2>
+            <h2>Federal District Voter Race Chart Analysis</h2>
             <div class="chartcontainer">
-                <canvas id="chart" width="900px" height="1000px"></canvas>
+            <canvas id="chart" width="900px" height="1000px"></canvas>
             </div>
         </div>
        
@@ -78,6 +78,3 @@
                 }
             });
         </script>
-
-</body>
-</html>

@@ -35,11 +35,11 @@
                             </td>
                         </tr>
                         <tr>
-                            <td>Voter Race By Parliament Districts</td>
-                            <td><a href="{{ route('parliamentVoterRace') }}">View</td>
+                            <td>Voter Race By Districts</td>
+                            <td><a href="{{ route('districtlist') }}">View</td>
                         <tr>
-                            <td>Voter Race By State Districts</td>
-                            <td><a href="{{ route('stateVoterRace') }}">View</td>
+                            <td>Voter Race By States</td>
+                            <td><a href="{{ route('statelist') }}">View</td>
                         </tr>
                         <tr>
                             <td>Voter Race By Voted Voters</td>

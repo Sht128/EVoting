@@ -15,7 +15,9 @@
         <div class="main">
             <h2>Already Voted Voter Race Chart Analysis</h2>
             <a href="{{ url()->previous() }}" class="btn btn-secondary">Return to Previous Page</a>
-            <canvas id="chart" width="900px" height="1000px"></canvas>
+            <div class="chartcontainer">
+                <canvas id="chart"></canvas>
+            </div>
         </div>
        
         
@@ -44,6 +46,8 @@
                                             ]
                                     },
                 options: {
+                    responsive: true,
+                    maintainAspectRatio:false,
                     scales: {
                         yAxes: [{
                             ticks: {

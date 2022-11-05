@@ -58,6 +58,9 @@ Route::get('/candidatedeposit', [DashboardController::class, 'candidatedepositVi
 Route::get('/raceanalytics', [DashboardController::class, 'raceAnalyticsView'])->name('raceanalytic');
 Route::get('/allelectionanalytics',[DashboardController::class, 'allElectionsView'])->name('allelections');
 Route::get('/candidatepartyanalytics',[DashboardController::class, 'candidatePartiesView'])->name('candidateparty');
+Route::get('allcandidatelist',[DashboardController::class, 'candidateListView'])->name('candidatelist');
+Route::get('/electionresultdashboard',[DashboardController::class, 'electionResultsDashboard'])->name('electionresults');
+
 // Vote Confirmation Page Route
 Route::get('/voteConfirmation/{ic}', [VoteController::class, 'voteConfirmation'])->name('voteConfirmation');
 Route::get('/verifyvote/{electionType}', [VoteController::class,'vote'])->name('castVote');
@@ -74,18 +77,26 @@ Route::get('/parliamentalelectionprogress/{ongoingstate}', [ElectionController::
 Route::get('/stateelectionprogress/{ongoingstate}', [ElectionController::class, 'stateElectionStateDetails'])->name('stateelectionstate');
 
 // Election Districts Details Page Route
-Route::get('/electionprogressdetails/{districtid}', [ElectionController::class, 'electionProgressDetails'])->name('electionprogress');
+Route::get('/electionprogressdetails/{districtId}', [ElectionController::class, 'electionProgressDetails'])->name('electionprogress');
 
 // Election Results Page Route
 Route::get('/viewelectionparties/{stateId}', [ElectionController::class, 'electionStatePartiesResult'])->name('electionpartiesresult');
-Route::get('/viewelectiondistricts/{districtId}/{electionType}', [ElectionController::class, 'electionDistrictsResult'])->name('electiondistrictsresult');
+Route::get('/viewelectionresults/{districtId}/{electionType}', [ElectionController::class, 'electionDistrictsResult'])->name('electiondistrictsresult');
+Route::get('/viewelectiondistricts/{stateId}', [ElectionController::class, 'electionDistricts'])->name('statedistricts');
+
+Route::get('/stateresultsdashboard', [DashboardController::class, 'electionStateResults'])->name('stateresult');
+Route::get('/electionpartyresultdashboard/{stateId}', [DashboardController::class, 'electionPartiesResult'])->name('parties');
+Route::get('/districtresultdashboard', [DashboardController::class, 'electionDistrictResult'])->name('districtresult');
+Route::get('/parliamentalelectionsummary', [DashboardController::class, 'parliamentalElectionSummary'])->name('summary');
 
 // Voter Analytics Page Route
 Route::get('/allvoteranalytics', [DashboardController::class, 'allVoterAnalyticsView'])->name('allVoterAnalytics');
 Route::get('/allvoterrace', [DashboardController::class, 'allVoterRaceView'])->name('allVoterRace');
-Route::get('/parliamentdistrictrace', [DashboardController::class, 'parliamentVoterRaceView'])->name('parliamentVoterRace');
-Route::get('/statedistrictrace', [DashboardController::class, 'stateVoterRaceView'])->name('stateVoterRace');
-Route::get('votedvoterrace', [DashboardController::class, 'votedVoterRaceView'])->name('votedVoterRace');
+Route::get('/statelist', [DashboardController::class, 'stateList'])->name('statelist');
+Route::get('/districtslist', [DashboardController::class, 'districtList'])->name('districtlist');
+Route::get('/districtvoterrace/{districtId}/{electionType}', [DashboardController::class, 'parliamentVoterRaceView'])->name('districtVoterRace');
+Route::get('/statedistrictrace/{stateId}', [DashboardController::class, 'stateVoterRaceView'])->name('stateVoterRace');
+Route::get('/votedvoterrace', [DashboardController::class, 'votedVoterRaceView'])->name('votedVoterRace');
 
 // Candidate Deposit Page Route
 Route::post('/candidatedeposit', [DashboardController::class, 'candidateDepositFilter'])->name('candidatedepositfilter');

@@ -38,7 +38,7 @@
                         <td>{{ $state->totalVoterCount}}</td>
                         <td>{{ $state->majorityCoalition}}</td>
                         <td><a href="{{ route('electionpartiesresult', ['stateId' => $state->stateId]) }}">View</a></td>
-                        <td><a href="{{ route('parliamentalelectionstate', ['ongoingstate' => $ongoingState->stateId]) }}">View</a></td>
+                        <td><a href="{{ route('statedistricts', ['stateId' => $state->stateId]) }}">View</a></td>
                     </tr>
                     @endforeach
                 </tbody>

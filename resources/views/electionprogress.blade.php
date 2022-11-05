@@ -13,6 +13,7 @@
 <body>
     @include ('headerhome')
         <div class="contentcontainter">
+            <button class="btn btn-primary"><a style="list-style: none" href="{{ url()->previous() }}">Back to District List Page</button>
             <canvas id="chart" ></canvas>
         </div>
 
@@ -30,17 +31,29 @@
                                     'rgba(255, 99, 132, 1)',
                                     'rgba(54, 162, 235, 1)',
                                     'rgba(255, 206, 86, 1)',
+                                    'rgba(200, 164, 140, 0.5)',
+                                    'rgba(218, 219, 27, 0.9)',
+                                    'rgba(30, 32, 98, 0.5)',
+                                    'rgba(200, 164, 140, 0.5)',
+                                    'rgba(50, 174, 150, 1)',
                                 ],
                                 borderColor: [
                                     'rgba(255,99,132,1)',
                                     'rgba(54, 162, 235, 1)',
                                     'rgba(255, 206, 86, 1)',
+                                    'rgba(200, 164, 140, 0.5)',
+                                    'rgba(218, 219, 27, 0.9)',
+                                    'rgba(30, 32, 98, 0.5)',
+                                    'rgba(200, 164, 140, 0.5)',
+                                    'rgba(50, 174, 150, 1)',
                                 ],
                                 borderWidth: 1,
                         },
                     ]
             },
         options: {
+            responsive: true,
+            maintainAspectRatio:false,
             scales: {
                 yAxes: [{
                     ticks: {

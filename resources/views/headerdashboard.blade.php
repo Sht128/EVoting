@@ -17,7 +17,7 @@
           <button class="dropdownbtn">Elections &#9660;</button>
           <div class="dropdown-container">
               <a href="{{ route('allelections') }}" class="nav-link">All Elections Analytics</a>
-              <a class="nav-link" href="">Voter Race Analytics</a>
+              <a class="nav-link" href="{{ route('electionresults') }}">Elections Result</a>
           </div>
             <button class="dropdownbtn">Voter &#9660;</button>
             <div class="dropdown-container">
@@ -26,6 +26,7 @@
             </div>
             <button class="dropdownbtn">Candidate &#9660;</button>
             <div class="dropdown-container">
+                <a href="{{ route('candidatelist') }}" class="nav-link">All Candidates List</a>
                 <a href="{{ route('candidateparty') }}" class="nav-link">All Candidate Party Analytics</a>
                 <a class="nav-link" href="{{ route('candidatedepositpage') }}">Candidate Deposit</a>
             </div>

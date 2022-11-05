@@ -106,11 +106,10 @@ html,body{
 }
   .candidate-deposit-list table{
     align-items: center;
-    width:fit-content;
+    width:100%;
     height: fit-content;
     border: 2px solid black;
     border-radius: 5px;
-    margin-left: 15%;
   }
 
   .candidate-deposit-list thead{
@@ -197,3 +196,41 @@ html,body{
       .election-progress td{
           border: 2px solid beige;
       }
+
+.table-state-list table{
+  border:1px solid cornflowerblue;
+  outline: 2px;
+  width: 100%;
+  height: auto;
+  outline-color: cadetblue;   
+  align-content: center;
+  align-self:center;
+}
+
+
+  .table-state-list thead{
+      background-color: darkgrey;
+      color: black;
+  }
+
+  .table-state-list tbody{
+      background-color: lightcyan;
+      color:cadetblue;
+  }
+
+  .table-state-list th{
+      border: 1px solid;
+  }
+
+  .table-state-list td{
+      border: 1px solid black;
+  }
+
+  .table-state-list a{
+      text-decoration: none;
+      color: cadetblue;
+  }
+
+  .table-state-list a:hover{
+      color: darkolivegreen;
+  }

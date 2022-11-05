@@ -13,7 +13,6 @@
 <body>
     @include ('headerdashboard')
         <div class="main">
-            <button class="btn btn-primary"><a href="{{ url()->previous() }}">Back to Previous</button>
                 <div class="title">
                     <p>All Candidate Party Chart Analysis</p>
                 </div>
@@ -37,11 +36,17 @@
                                     'rgba(255, 99, 132, 1)',
                                     'rgba(54, 162, 235, 0.2)',
                                     'rgba(255, 206, 86, 0.2)',
+                                    'rgba(225, 57, 226, 0.7)',
+                                    'rgba(59, 185, 4, 0.2)',
+                                    'rgba(105, 48, 92, 0.6)',
                                 ],
                                 borderColor: [
                                     'rgba(255,99,132,1)',
                                     'rgba(54, 162, 235, 1)',
                                     'rgba(255, 206, 86, 1)',
+                                    'rgba(225, 57, 226, 0.7)',
+                                    'rgba(59, 185, 4, 0.2)',
+                                    'rgba(105, 48, 92, 0.6)',
                                 ],
                                 borderWidth: 1
                                                 }

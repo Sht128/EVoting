@@ -67,7 +67,9 @@
                     </tr>
                     @endforeach
                 </tbody>
+            </table>
         </div>
+        <button class="btn btn-primary"><a href="{{ url()->previous() }}">Back to Previous</button>
     </div>
 
 <script>
