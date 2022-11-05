@@ -52,8 +52,8 @@ html,body{
   .main .chartcontainer{
     display: block;
     position: relative;
-    width: 1000px;
-    height:200px;
+    width: 90%;
+    height:650px;
     margin-top: 50px;
     border-style: solid;
     border: 8px;

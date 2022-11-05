@@ -43,7 +43,7 @@ class DashboardController extends Controller
         $chart->labels = (array_keys($data));
         $chart->dataset = (array_values($data));
 
-        return view('allvoterrace')->with(compact('chart'));
+        return view('allvoteranalytics')->with(compact('chart'));
     }
 
     public function allVoterRaceView(){

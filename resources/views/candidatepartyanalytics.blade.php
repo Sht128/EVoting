@@ -14,11 +14,11 @@
     @include ('headerdashboard')
         <div class="main">
             <button class="btn btn-primary"><a href="{{ url()->previous() }}">Back to Previous</button>
-            <div class="chartcontainer">
                 <div class="title">
-                    <p>All Voter Data Chart Analysis</p>
-                </div><br><br>
-            <canvas id="chart"></canvas>
+                    <p>All Candidate Party Chart Analysis</p>
+                </div>
+            <div class="chartcontainer">
+            <canvas id="chart" width="900px" height="500px"></canvas>
             </div>
         </div>
        
@@ -26,7 +26,7 @@
         <script>
             var context = document.getElementById('chart').getContext('2d');
             var chart = new Chart(context, {
-                type: 'bar',
+                type: 'pie',
                 data: {
                         labels: {!!json_encode($chart->labels)!!},
                         datasets: [
@@ -49,7 +49,7 @@
                                     },
                 options: {
                     responsive: true,
-                    maintainAspectRatio:false,
+                    maintainAspectRatio: false,
                     scales: {
                         yAxes: [{
                             ticks: {

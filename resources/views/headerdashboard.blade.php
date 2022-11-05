@@ -26,7 +26,7 @@
             </div>
             <button class="dropdownbtn">Candidate &#9660;</button>
             <div class="dropdown-container">
-                <a href="" class="nav-link">All Candidate Analytics</a>
+                <a href="{{ route('candidateparty') }}" class="nav-link">All Candidate Party Analytics</a>
                 <a class="nav-link" href="{{ route('candidatedepositpage') }}">Candidate Deposit</a>
             </div>
             <a class="nav-link" href="{{ route('home') }}">Return to Voting System </a>

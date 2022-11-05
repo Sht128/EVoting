@@ -45,16 +45,55 @@ class ElectionController extends Controller
     public function electionResultsView(){
         $parlimentDistrictCount = ParliamentalDistrict::get()->count();
         $parlimentalFinishCount = ParliamentalDistrict::where('votingStatus','=',1)->get()->count();
-        $parliments = ParliamentalDistrict::join('candidate','candidate.ic','=','parliamentaldistrict.majorityCandidate')->where('votingStatus','=',1);
+        $parliments = ParliamentalDistrict::join('candidate','candidate.ic','=','parliamentaldistrict.majorityCandidate')->select('candidate.party','parliamentaldistrict.*')->where('votingStatus','=',1)->get();
+        $federalparties = ParliamentalDistrict::join('candidate','candidate.ic','=','parliamentaldistrict.majorityCandidate')->groupBy('candidate.party')->select('candidate.party',DB::raw('count(*) as total'))->where('votingStatus','=',1)->get();
         if($parlimentDistrictCount == $parlimentalFinishCount){
             $parlimentVotingStatus = "Finish";
         }
         else{
             $parlimentVotingStatus = "Not Done";
         }
-        $states = StateDistrict::join('candidate','candidate.ic','=','parliamentaldistrict.majorityCandidate')->where('votingStatus','=',1);
 
-        return view('viewelectionresults')->with(compact('parliments'))->with(compact('states'));
+        $states = State::where('votingStatus','=',1);
+        foreach($states as $state){
+           $totalDistrict = StateDistrict::select('currentVoteCount',DB::raw('count(*) as total'))->where('stateId','=',$state->stateId)->get();
+           $state->totalVoterCount = $totalDistrict->total;
+        }
+
+        return view('viewelectionresults')->with(compact('parliments'))->with(compact('states'))->with(compact('federalparties'))->with('federalElection',$parlimentVotingStatus);
+    }
+
+    /**
+     * Returns Finished State Election Results
+     * 
+     */
+    public function electionStatePartiesResult(Request $request){
+        $parties =(array) StateDistrict::join('candidate','candidate.ic','=','statedistrict.majorityCandidate')->groupBy('candidate.party')->select('candidate.party',DB::raw('count(*) as total'))->where('statedistrict.stateId','=',$request->stateId)->pluck('total','candidate.party as party')->all();
+
+        $chart = new Chart();
+        $chart->labels = (array_keys($parties));
+        $chart->dataset = (array_values($parties));
+
+        return view('electionprogress')->with(compact('chart'))->with('seating',$request->districtId);
+    }
+
+    /**
+     * Returns Finished Districts Result
+     * 
+     */
+    public function electionDistrictsResult(Request $request){
+        if($request->electionType == 'Federal Election'){
+            $district =(array) Candidate::where('parliamentalConstituency','=',$request->districtId)->pluck('parlimentVoteCount','name')->all();
+        }
+        elseif($request->electionType == 'State Election'){
+            $district =(array) Candidate::where('stateConstituency','=',$request->districtId)->pluck('stateVoteCount','name')->all();
+        }
+
+        $chart = new Chart;
+        $chart->labels = (array_keys($district));
+        $chart->dataset = (array_values($district));
+
+        return view('electionprogress')->with(compact('chart'))->with('seating',$request->districtId);
     }
 
     /**

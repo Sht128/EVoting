@@ -33,10 +33,11 @@
                 <tbody>
                     @foreach($states as $state)
                     <tr>
-                        <td>{{ $ongoingState->stateId}}</td>
-                        <td>{{ $ongoingState->parliamentalDistrictCount}}</td>
-                        <td>{{ $ongoingState->totalVoterCount}}</td>
-                        <td>{{ $ongoingState->currentVoteCount}}</td>
+                        <td>{{ $state->stateId}}</td>
+                        <td>{{ $state->stateDistrictCount}}</td>
+                        <td>{{ $state->totalVoterCount}}</td>
+                        <td>{{ $state->majorityCoalition}}</td>
+                        <td><a href="{{ route('electionpartiesresult', ['stateId' => $state->stateId]) }}">View</a></td>
                         <td><a href="{{ route('parliamentalelectionstate', ['ongoingstate' => $ongoingState->stateId]) }}">View</a></td>
                     </tr>
                     @endforeach
@@ -45,28 +46,46 @@
             <br><br>
         </div>
 
-        <p>Parliment Election Results</p><br>
+        <p>Parliment Election Results - {{ $federalElection }}</p><br>
         <hr>
-        <div class="election-progress">
+            <div class="table-state-list">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Coalition Name</th>
+                            <th>Acquired Seats Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($federalparties as $parties)
+                        <tr>
+                            <td>{{ $parties->party}}</td>
+                            <td>{{ $parties->total}}</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            <div class="election-progress">
             <table class="election-progress">
                 <thead>
                     <tr>
                         <th>Federal Election State</th>
-                        <th>Total Districts Count</th>
-                        <th>Majority Coalition</th>
+                        <th>Total Vote Count</th>
+                        <th>Majority Candidate</th>
                         <th>Majority Seats</th>
                         <th>View Full Districts List</th>
                     </tr>
                 </thead>
 
                 <tbody>
-                    @foreach($doneStateLists as $ongoingState)
+                    @foreach($parliments as $parliment)
                     <tr>
-                        <td>{{ $ongoingState->stateId}}</td>
-                        <td>{{ $ongoingState->parliamentalDistrictCount}}</td>
-                        <td>{{ $ongoingState->totalVoterCount}}</td>
-                        <td>{{ $ongoingState->currentVoteCount}}</td>
-                        <td><a href="{{ route('parliamentalelectionstate', ['ongoingstate' => $ongoingState->stateId]) }}">View</a></td>
+                        <td>{{ $parliment->districtId}}</td>
+                        <td>{{ $parliment->currentVoteCount}}</td>
+                        <td>{{ $parliment->majorityCandidate}}</td>
+                        <td>{{ $parliment->majorityVote}}</td>
+                        <td><a href="{{ route('electiondistrictsresult', ['districtId' => $district->districtId, 'electionType'=>'Federal Election']) }}">View</a></td>
                     </tr>
                     @endforeach
                 </tbody>
