@@ -13,13 +13,13 @@
     @include('headerdashboard')
 
     <div class="main">
-        <h2>Election Vote Progress Page</h2>
+        <h2>Election Unofficial Results Page</h2>
         <div class="card text-center">
             <div class="card-header">
-                <p> You are able to choose which type of Election Progress to view:</p>
+                <p> You are able to choose which type of Election Results to view:</p>
             </div>
             <div class="card-body">
-                <p>Election Progress Currently Available:</p>
+                <p>Election Results Currently Available:</p>
                 <div class="table-state-list">
                 <table>
                     <thead>

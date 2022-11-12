@@ -59,13 +59,17 @@
                         @endif
                         @if(!empty($candidate->parliamentElectionDeposit))
                             <td>{{ $candidate->parliamentElectionDeposit}}</td>
-                        @else
+                        @elseif(is_null($candidate->parliamentElectionDeposit))
                             <td>No Deposit Available</td>
+                        @else($candidate->parliamentElectionDeposit == 0)
+                            <td>Deposit Lost</td>
                         @endif
                         @if(!empty($candidate->stateElectionDeposit))
                         <td>{{ $candidate->stateElectionDeposit}}</td>
-                        @else
+                        @elseif(is_null($candidate->stateElectionDeposit))
                             <td>No Deposit Available</td>
+                        @else($candidate->stateElectionDeposit == 0)
+                            <td>Deposit Lost</td>
                         @endif
                     </tr>
                     @endforeach

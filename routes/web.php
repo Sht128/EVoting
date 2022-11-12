@@ -28,7 +28,7 @@ Route::get('/email/verify', function () {
 })->middleware('auth')->name('verification.notice');
 
 
-Route::get('/email/verify/{ic}', function (EmailVerificationRequest $request) {
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();
  
     return redirect('/home');
@@ -87,6 +87,7 @@ Route::get('/viewelectiondistricts/{stateId}', [ElectionController::class, 'elec
 Route::get('/stateresultsdashboard', [DashboardController::class, 'electionStateResults'])->name('stateresult');
 Route::get('/electionpartyresultdashboard/{stateId}', [DashboardController::class, 'electionPartiesResult'])->name('parties');
 Route::get('/districtresultdashboard', [DashboardController::class, 'electionDistrictResult'])->name('districtresult');
+Route::get('/electionprogressdashboard/{districtId}', [DashboardController::class, 'electionProgressDetails'])->name('electionprogressdashboard');
 Route::get('/parliamentalelectionsummary', [DashboardController::class, 'parliamentalElectionSummary'])->name('summary');
 
 // Voter Analytics Page Route

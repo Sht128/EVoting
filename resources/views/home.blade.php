@@ -23,19 +23,18 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header"><p>Welcome, {{ Auth::user()->name}}</p></div>
-
+                
                 <div class="card-body">
                     {{ __('You are logged in!') }}
-
                     <p class="card title">Your Vote Eligibility Status indicates that you still have
                         @if (Session('userVoteCount') == 0)
-                            0
+                            0 vote
                         @elseif (Session('userVoteCount') == 1)
-                            1
+                            1 vote
                         @else
-                            2
+                            2 votes
                         @endif
-                        votes left</p>
+                         left</p>
 
                     @if (Session('userVoteCount') > 0)
                     <p class="card text"> You are able to cast your remaining votes through our Election page:</p>
@@ -46,6 +45,9 @@
                         @endif
                         @if (Auth::user()->stateVoteStatus == 0)
                             <a href="{{ route('stateElectionPage') }}">Cast your state vote here!</a>
+                        @endif
+                        @if (Session('userVoteCount') == 0)
+                            <a href="{{ route('voterprofile') }}">View your vote history here</a>
                         @endif
                     </div>    
                 </div>

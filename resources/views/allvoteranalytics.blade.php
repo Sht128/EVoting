@@ -13,7 +13,6 @@
 <body>
     @include ('headerdashboard')
         <div class="main">
-            <button class="btn btn-primary"><a href="{{ url()->previous() }}">Back to Previous</button>
             <div class="chartcontainer">
                 <div class="title">
                     <p>All Voter Data Chart Analysis</p>

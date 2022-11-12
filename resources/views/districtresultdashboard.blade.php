@@ -34,8 +34,8 @@
                         <td>{{ $parliamental->districtId}}</td>
                         <td>{{ $parliamental->stateId}}</td>
                         <td>{{ $parliamental->currentVoteCount}}</td>
-                        <td>{{ $parliamental->majorityCandidate}}</td>
-                        <td><a href="{{ route('districtVoterRace',['districtId'=>$parliamental->districtId, 'electionType'=>'Federal Election'])}}">View</a></td>
+                        <td>{{ $parliamental->name}}</td>
+                        <td><a href="{{ route('electionprogressdashboard',['districtId'=>$parliamental->districtId, 'electionType'=>'Federal Election'])}}">View</a></td>
                         @endforeach
                     </tbody>
                 </table>
@@ -58,8 +58,8 @@
                         <td>{{ $state->districtId}}</td>
                         <td>{{ $state->stateId}}</td>
                         <td>{{ $state->currentVoteCount}}</td>
-                        <td>{{ $state->majorityCandidate}}</td>
-                        <td><a href="{{ route('districtVoterRace',['districtId'=>$state->districtId, 'State Election'])}}">View</a></td>
+                        <td>{{ $state->name}}</td>
+                        <td><a href="{{ route('electionprogressdashboard',['districtId'=>$state->districtId, 'electionType'=>'State Election'])}}">View</a></td>
                         @endforeach
                     </tbody>
                 </table>

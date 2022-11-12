@@ -110,7 +110,7 @@ class ElectionController extends Controller
      */
     public function parlimentProgressList(){
         // Get Ongoing Parliamental Election State Details
-        $ongoingState = DB::table('state')->join('parliamentaldistrict','state.stateId','=','parliamentaldistrict.stateId')->select('parliamentaldistrict.*','state.parliamentalDistrictCount')->where('votingStatus','=',0)->get();
+        $ongoingState = DB::table('state')->join('parliamentaldistrict','state.stateId','=','parliamentaldistrict.stateId')->select('parliamentaldistrict.*','state.parliamentalDistrictCount')->where('parliamentaldistrict.votingStatus','=',0)->get();
         $ongoingStateLists = $ongoingState->unique('stateId');
 
         // Find Voter and Vote Counts In Each Districts And Add It Into Collection
@@ -122,7 +122,7 @@ class ElectionController extends Controller
         }
         
         // Get Done Voting Parliamental Election State Details
-        $doneState = DB::table('state')->join('parliamentaldistrict','state.stateId','=','parliamentaldistrict.stateId')->select('parliamentaldistrict.*','state.parliamentalDistrictCount')->where('votingStatus','=',1)->get();
+        $doneState = DB::table('state')->join('parliamentaldistrict','state.stateId','=','parliamentaldistrict.stateId')->select('parliamentaldistrict.*','state.parliamentalDistrictCount')->where('parliamentaldistrict.votingStatus','=',1)->get();
         $doneStateLists = $doneState->unique('stateId');
 
         // Find Voter and Vote Counts In Each Districts And Add It Into Collection
@@ -148,7 +148,7 @@ class ElectionController extends Controller
         }
 
         // Get Finished Voting Election State Details
-        $doneState = State::join('statedistrict','state.stateId','=','statedistrict.stateId')->select('statedistrict.*','state.stateDistrictCount')->where('votingStatus','=',1)->get();
+        $doneState = State::join('statedistrict','state.stateId','=','statedistrict.stateId')->select('statedistrict.*','state.stateDistrictCount')->where('state.stateVotingStatus','=',1)->get();
         $doneStateLists = $doneState->unique('stateId');
         foreach($doneStateLists as $state){
             $totalVoterCount = StateDistrict::select('voterTotalCount')->where('stateId','=',$state->stateId)->sum('voterTotalCount');
@@ -168,7 +168,7 @@ class ElectionController extends Controller
     public function stateElectionStateDetails(Request $request){
         $districts = StateDistrict::where('stateId','=',$request->ongoingstate)->get();
         $electionType = 'State Election';
-        return view('electionProgressDetails')->with(compact('districts'))->with('electiontype',$electionType);
+        return view('electionprogressDetails')->with(compact('districts'))->with('electiontype',$electionType);
     }
 
     public function electionProgressDetails(Request $request){
@@ -179,11 +179,6 @@ class ElectionController extends Controller
             $chart->labels = (array_keys($candidates));
             $chart->dataset = (array_values($candidates));
 
-            for ($i=0; $i<=count($candidates); $i++) {
-                $colours[] = '#' . substr(str_shuffle('ABCDEF0123456789'), 0, 6);
-            }
-            $chart->colors = $colours;
-
             return view('electionprogress')->with(compact('chart'))->with(compact('district'));
         }
         elseif($request->election == 'State Election'){
@@ -192,11 +187,6 @@ class ElectionController extends Controller
             $chart = new Chart;
             $chart->labels = (array_keys($candidates));
             $chart->dataset = (array_values($candidates));
-
-            for ($i=0; $i<=count($candidates); $i++) {
-                $colours[] = '#' . substr(str_shuffle('ABCDEF0123456789'), 0, 6);
-            }
-            $chart->colors = $colours;
 
             return view('electionprogress')->with(compact('chart'))->with(compact('district'));
         }

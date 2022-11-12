@@ -45,30 +45,38 @@ class HomeController extends Controller
       public function voterProfile(){
         if(Auth::check()){
             if(Auth::user()->parlimentVoteStatus == 1){
-                $vote = Vote::where(['seatingId' => Auth::user()->parliamentalConstituency, 'electionType' => 'Federal Election'])->first();
-                $candidate = decrypt($vote->candidateId);
-
+                $votes = Vote::where(['seatingId' => Auth::user()->parliamentalConstituency, 'electionType' => 'Federal Election'])->get();
+                $candidate = '';
+                foreach($votes as $vote){
+                    $vote->voterId = decrypt($vote->voterId);
+                    if($vote->voterId == Auth::user()->ic){
+                        $candidate = decrypt($vote->candidateId);
+                    }
+                }
                 $federalCandidate = Candidate::select('name','party')->where('ic','=',$candidate)->first();
+            }
+            else{
+                $federalCandidate = null;
             }
 
             if(Auth::user()->stateVoteStatus == 1){
-                $vote = Vote::where(['seatingId' => Auth::user()->stateConstituency, 'electionType' => 'State Election'])->first();
-                $candidate = decrypt($vote->candidateId);
+                $votes = Vote::where(['seatingId' => Auth::user()->stateConstituency, 'electionType' => 'State Election'])->get();
+                $candidate = '';
+                foreach($votes as $vote){
+                    $vote->voterId = decrypt($vote->voterId);
+                    if($vote->voterId == Auth::user()->ic){
+                        $candidate = decrypt($vote->candidateId);
+                    }
+                }
+                
 
                 $stateCandidate = Candidate::select('name','party')->where('ic','=',$candidate)->first();
+            }
+            else{
+                $stateCandidate = null;
             }
 
             return view('voterprofile')->with(compact('federalCandidate'))->with(compact('stateCandidate'));
         }
       }
-
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-    public function index()
-    {
-        return view('home');
-    }
 }

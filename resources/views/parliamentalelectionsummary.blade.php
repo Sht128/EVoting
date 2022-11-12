@@ -34,7 +34,7 @@
         </div>
         <div class="chartcontainer">
             <div class="title">
-                <p>All Voter Data Chart Analysis</p>
+                <p>Federal Election Parties Chart Analysis</p>
             </div><br><br>
         <canvas id="chart"></canvas>
         </div>

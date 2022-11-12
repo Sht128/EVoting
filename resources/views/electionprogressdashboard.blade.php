@@ -11,18 +11,22 @@
 </head>
 
 <body>
-    @include ('headerhome')
-        
+    @include ('headerdashboard')
+        <div class="main">
             <button class="btn btn-primary"><a style="list-style: none" href="{{ url()->previous() }}">Back to District List Page</a></button>
+            <div class="title">
+                <p>District Election Results Analysis</p>
+            </div>
             <div class="chartcontainer">
                 <canvas id="chart" ></canvas>
             </div>
+        </div>
         
 
 <script>
     var context = document.getElementById('chart').getContext('2d');
     var chart = new Chart(context, {
-        type: 'bar',
+        type: 'pie',
         data: {
                 labels: {!!json_encode($chart->labels)!!},
                 datasets: [

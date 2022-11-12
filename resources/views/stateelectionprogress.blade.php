@@ -42,7 +42,7 @@
             <br><br>
         </div>
 
-        <p>Finish Voted Parliment Election State</p><br>
+        <p>Finish Voted State Election State</p><br>
         <hr>
         <div class="election-progress">
             <table class="election-progress">
@@ -67,5 +67,8 @@
                     </tr>
                     @endforeach
                 </tbody>
+            </table>
         </div>
+        <br><br><br>
+        <button class="btn btn-primary"><a href="{{ url()->previous() }}">Back to Previous</button>
     </div>

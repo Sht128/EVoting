@@ -91,7 +91,7 @@ class RegisterController extends Controller
             $this->updateStateDistrictVoterCount($voterData);
             $this->updateParliamentalDistrictVoterCount($voterData);
 
-            $this->guard()->login($voter);
+            
             return $this->registered($request, $voter)
                         ?: redirect($this->redirectPath());
         }
@@ -116,6 +116,7 @@ class RegisterController extends Controller
             'race' => $firstData['race'],
             'mobileNumber' => $secondData['mobileno'],
             'email' => $secondData['email'],
+            'email_verified_at' => null,
             'district' => $firstData['district'],
             'state' => $firstData['state'],
             'postcode' => $firstData['postcode'],
@@ -155,19 +156,5 @@ class RegisterController extends Controller
 
             return  $updateVoterCount;
         }
-    }
-
-    protected function updateDepositStatus(array $firstData){
-        $depositAll = ElectionDeposit::first();
-        $seatings = DB::connection('mysql2')->table('candidate')->select('parliamentalConstituency','stateConstituency')->where('ic','=',$firstData['ic'])->get()->first();
-        if(Str::contains($seatings->parliamentalConstituency, 'P')){
-            $updateParlimentDeposit = Candidate::where('ic','=',$firstData['ic'])->update(['parliamentElectionDeposit' => $depositAll->parliamentalSeatDeposit]);
-        }
-
-        if(Str::contains($seatings->stateConstituency, 'N')){
-            $updateStateDeposit = Candidate::where('ic','=',$firstData['ic'])->update(['stateElectionDeposit' => $depositAll->stateSeatDeposit]);
-        }
-
-        return Candidate::where('ic','=',$firstData['ic'])->update(['campaignDeposit' => $depositAll->campaignDeposit]);
     }
 }

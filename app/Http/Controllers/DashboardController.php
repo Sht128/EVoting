@@ -13,11 +13,7 @@ use DB;
 
 class DashboardController extends Controller
 {
-    public function candidatedepositView(){
-        $candidateList = Candidate::orderBy('name')->get();
-
-        return view('candidatedeposit')->with(compact('candidateList'));
-    }
+    
 
     public function raceAnalyticsView(){
         return view('raceanalytics');
@@ -37,6 +33,26 @@ class DashboardController extends Controller
         }
 
         return view('allelectionanalytics')->with(compact('parliamentals'))->with(compact('states'));
+    }
+    
+    public function electionProgressDetails(Request $request){
+        if ($request->electionType == 'Federal Election'){
+            $candidates = (array) Candidate::select('name','parliamentalVoteCount')->where('parliamentalConstituency','=',$request->districtId)->pluck('parliamentalVoteCount','name')->all();
+            $district = ParliamentalDistrict::where('districtId','=',$request->districtId)->first();
+            $chart = new Chart;
+            $chart->labels = (array_keys($candidates));
+            $chart->dataset = (array_values($candidates));
+
+            return view('electionprogressdashboard')->with(compact('chart'));
+        }
+        elseif($request->electionType == 'State Election'){
+            $candidates = Candidate::select('name','stateVoteCount')->where('stateConstituency','=',$request->districtId)->pluck('stateVoteCount','name')->all();
+            $chart = new Chart;
+            $chart->labels = (array_keys($candidates));
+            $chart->dataset = (array_values($candidates));
+
+            return view('electionprogressdashboard')->with(compact('chart'));
+        }
     }
 
     public function electionResultsDashboard(){
@@ -82,8 +98,8 @@ class DashboardController extends Controller
     }
 
     public function electionDistrictResult(){
-        $parliamentals = ParliamentalDistrict::orderBy('stateId')->where('votingStatus','=',1)->get();
-        $states = StateDistrict::orderBy('stateId')->where('votingStatus','=',1)->get();
+        $parliamentals = ParliamentalDistrict::orderBy('stateId')->join('candidate','candidate.ic','=','parliamentaldistrict.majorityCandidate')->select('candidate.name','parliamentaldistrict.*')->where('votingStatus','=',1)->get();
+        $states = StateDistrict::orderBy('stateId')->join('candidate','candidate.ic','=','statedistrict.majorityCandidate')->select('candidate.name','statedistrict.*')->where('votingStatus','=',1)->get();
 
         return view('districtresultdashboard')->with(compact('parliamentals'))->with(compact('states'));
 
@@ -106,7 +122,7 @@ class DashboardController extends Controller
         $chart->dataset = array_values($data);
 
         return view('parliamentalelectionsummary')->with(compact('federalparties'))->with(compact('chart'));
-    }
+    }   
 
     public function allVoterAnalyticsView(){
         $parlimentVoted = Voter::where(['parlimentVoteStatus'=>1,'stateVoteStatus'=>0])->get()->count();
@@ -187,6 +203,12 @@ class DashboardController extends Controller
         $candidates = Candidate::orderBy('registeredState')->get();
 
         return view('allcandidatelist')->with(compact('candidates'));
+    }
+    
+    public function candidatedepositView(){
+        $candidateList = Candidate::orderBy('name')->get();
+
+        return view('candidatedeposit')->with(compact('candidateList'));
     }
 
     public function candidateDepositFilter(Request $request){

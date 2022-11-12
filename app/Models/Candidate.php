@@ -61,5 +61,6 @@ class Candidate extends Authenticatable
         'remember_token',
     ];
 
+    public $incrementing = false;
     public $timestamps = false;
 }

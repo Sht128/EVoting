@@ -24,8 +24,9 @@ html,body{
     align-content: center;
     height: auto;
     width:1250px;
-    margin-left:100px;
-    margin-right:200px;
+    margin-left:18%;
+    margin-right:15%;
+    margin-top: 2%;
 }
 
 .navbar-dashboard{
@@ -45,8 +46,8 @@ html,body{
     border-radius: 5px;
     border-color:blue;
     border-style: solid;
-    margin-left: 15%;
-    margin-right: 15%;
+    margin-left:26%;
+    margin-right:15%;
     margin-top: 5%;
 }
     .vote-profile p{
@@ -327,13 +328,7 @@ hr {
 }
 
 .chartcontainer{
-    display: block;
-    position: relative;
     width: 90%;
-    height:75%;
-    margin-top: 50px;
-    border-style: solid;
-    border: 8px;
-    border-radius: 8px;
-    border-color: black;
+    height: 800px;
+    margin-left: 6%;
 }

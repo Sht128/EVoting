@@ -19,11 +19,6 @@
                     <div class="card-header">{{ __('Verify Your Vote Authentication Code') }}</div>
     
                     <div class="card-body">
-                        @if (session('resent'))
-                            <div class="alert alert-success" role="alert">
-                                {{ __('A fresh verification link has been sent to your email address.') }}
-                            </div>
-                        @endif
                     {{ __('Before proceeding, please check your email for a verification code. You are required to authenticate your vote by providing the verification code sent.') }}<br><br>
 
                         <form method="POST" action="{{ route('authenticateCode',['ic'=>$ic,'electionType'=>$electionType]) }}">
@@ -47,16 +42,7 @@
                             </form>
 
                         <br><br>
-                        {{ __('If you did not receive the email') }},
-                        <form class="d-inline" method="POST" action="{{ route('resendCode') }}">
-                            @csrf
-                            <button type="submit" class="btn btn-link">{{ __('click here to request another') }}</button>.
-                        </form>
-                        @if (session('resent'))
-                        <div class="alert alert-success" role="alert">
-                            {{ __('A fresh verification link has been sent to your email address.') }}
-                        </div>
-                        @endif
+                       
                     </div>
                 </div>
             </div>

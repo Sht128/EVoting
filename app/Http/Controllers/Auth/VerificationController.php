@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\VoteController;
 use App\Mail\VoteMail;
@@ -11,9 +12,11 @@ use App\Models\VoterToken;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\VerifiesEmails;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Auth\Events\Verified;
 use Illuminate\Encryption\Encrypter;
 use Vonage;
 use Auth;
+use League\CommonMark\Extension\SmartPunct\Quote;
 use Mail;
 use Session;
 
@@ -51,6 +54,8 @@ class VerificationController extends Controller
         $this->middleware('throttle:6,1')->only('verify', 'resend');
     }
 
+ 
+
     /**
      * Get a validator for an incoming request.
      *
@@ -82,13 +87,17 @@ class VerificationController extends Controller
         else{
             $type = 'State Election';
         }
-
+        
         // Create new Voter Token
         VoterToken::create([
             'ic' => Auth::user()->ic,
             'token' => encrypt($code),
             'type' => $type,
         ]);
+
+        if(Session::has('resent')){
+            Session::pull('resent');
+        }
 
         // Send Verification Code Email
         Mail::to(Auth::user()->email)->send(new VoteMail($code));
@@ -179,11 +188,10 @@ class VerificationController extends Controller
             'type' => $type,
         ]);
 
-        Session::put('resent'); // Set Resent Email Session Data
+        Session::put('resent', 'Email has been resent'); // Set Resent Email Session Data
 
-        // Resent Email
-        Mail::to(Auth::user()->email)->send(new VoteMail($code));
+        
 
-        return redirect()->to($request->url());
+        return redirect()->route('verifyVote')->with('request');
     }
 }

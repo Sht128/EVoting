@@ -69,6 +69,7 @@
                 </tbody>
             </table>
         </div>
+        <br><br><br>
         <button class="btn btn-primary"><a href="{{ url()->previous() }}">Back to Previous</button>
     </div>
 

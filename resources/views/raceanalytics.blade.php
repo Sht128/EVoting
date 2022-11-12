@@ -12,7 +12,7 @@
 <body>
     @include('headerdashboard')
     <div class="main"> 
-        <p>Election Vote Progress Page</p>
+        <br><br>
         <div class="card text-center">
             <div class="card-header">
                 <p> Types of Voter Race Analytics</p>
