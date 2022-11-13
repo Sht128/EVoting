@@ -60,7 +60,7 @@
                     @foreach($doneStateLists as $ongoingState)
                     <tr>
                         <td>{{ $ongoingState->stateId}}</td>
-                        <td>{{ $ongoingState->parliamentalDistrictCount}}</td>
+                        <td>{{ $ongoingState->stateDistrictCount}}</td>
                         <td>{{ $ongoingState->totalVoterCount}}</td>
                         <td>{{ $ongoingState->currentVoteCount}}</td>
                         <td><a href="{{ route('stateelectionstate', ['ongoingstate' => $ongoingState->stateId]) }}">View</a></td>

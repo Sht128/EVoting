@@ -386,6 +386,8 @@ class VoteController extends Controller
             $parties =Candidate::join('statedistrict','candidate.ic','=','statedistrict.majorityCandidate')->groupBy('party')->select('party', DB::raw('count(*) as total'))->where('state','=',$state->stateId)->pluck('total','party')->all();
 
             $majorityDistrict = $state->stateDistrictCount / 2;
+            $firstParty = $parties->first();
+            $majorityParty = $firstParty->party;
             foreach($parties as $party){
                 
                 if($party->total > $majorityDistrict){

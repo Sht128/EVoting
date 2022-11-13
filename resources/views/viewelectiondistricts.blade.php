@@ -31,7 +31,7 @@
                     <tr>
                         <td>{{ $state->districtId}}</td>
                         <td>{{ $state->currentVoteCount}}</td>
-                        <td>{{ $state->majorityCandidate}}</td>
+                        <td>{{ $state->name}}</td>
                         <td><a href="{{ route('electiondistrictsresult', ['districtId' => $state->districtId, 'electionType'=>'State Election']) }}">View</a></td>
                     </tr>
                     @endforeach

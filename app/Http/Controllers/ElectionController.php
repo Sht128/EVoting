@@ -45,7 +45,7 @@ class ElectionController extends Controller
     public function electionResultsView(){
         $parlimentDistrictCount = ParliamentalDistrict::get()->count();
         $parlimentalFinishCount = ParliamentalDistrict::where('votingStatus','=',1)->get()->count();
-        $parliments = ParliamentalDistrict::join('candidate','candidate.ic','=','parliamentaldistrict.majorityCandidate')->select('candidate.party','parliamentaldistrict.*')->where('votingStatus','=',1)->get();
+        $parliments = ParliamentalDistrict::join('candidate','candidate.ic','=','parliamentaldistrict.majorityCandidate')->select('candidate.party','candidate.name','parliamentaldistrict.*')->where('votingStatus','=',1)->get();
         $federalparties = ParliamentalDistrict::join('candidate','candidate.ic','=','parliamentaldistrict.majorityCandidate')->groupBy('candidate.party')->select('candidate.party',DB::raw('count(*) as total'))->where('votingStatus','=',1)->get();
         if($parlimentDistrictCount == $parlimentalFinishCount){
             $parlimentVotingStatus = "Finish";
@@ -81,9 +81,9 @@ class ElectionController extends Controller
      * Return State Districts List
      */
     public function stateDistricts(Request $request){
-        $states = State::orderBy('districtId')->get();
+        $states = StateDistrict::join('candidate','candidate.ic','=','statedistrict.majorityCandidate')->orderBy('statedistrict.districtId')->select('candidate.name','statedistrict.*')->where('statedistrict.stateId','=',$request->stateId)->get();
 
-        return view('viewelectiondistricts')->with(compact('states'));
+        return view('viewelectiondistricts')->with(compact('states'))->with('state',$request->stateId);
     }
 
     /**
@@ -92,7 +92,7 @@ class ElectionController extends Controller
      */
     public function electionDistrictsResult(Request $request){
         if($request->electionType == 'Federal Election'){
-            $district =(array) Candidate::where('parliamentalConstituency','=',$request->districtId)->pluck('parlimentVoteCount','name')->all();
+            $district =(array) Candidate::where('parliamentalConstituency','=',$request->districtId)->pluck('parliamentalVoteCount','name')->all();
         }
         elseif($request->electionType == 'State Election'){
             $district =(array) Candidate::where('stateConstituency','=',$request->districtId)->pluck('stateVoteCount','name')->all();
@@ -168,7 +168,7 @@ class ElectionController extends Controller
     public function stateElectionStateDetails(Request $request){
         $districts = StateDistrict::where('stateId','=',$request->ongoingstate)->get();
         $electionType = 'State Election';
-        return view('electionprogressDetails')->with(compact('districts'))->with('electiontype',$electionType);
+        return view('electionprogressdetails')->with(compact('districts'))->with('electiontype',$electionType);
     }
 
     public function electionProgressDetails(Request $request){

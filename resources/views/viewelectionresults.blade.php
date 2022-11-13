@@ -46,7 +46,7 @@
             <br><br>
         </div>
 
-        <p>Parliment Election Results - {{ $federalElection }}</p><br>
+        <p>Federal Election Results - {{ $federalElection }}</p><br>
         <hr>
             <div class="table-state-list">
                 <table>
@@ -70,11 +70,11 @@
             <table class="election-progress">
                 <thead>
                     <tr>
-                        <th>Federal Election State</th>
+                        <th>Federal Election District</th>
                         <th>Total Vote Count</th>
                         <th>Majority Candidate</th>
-                        <th>Majority Seats</th>
-                        <th>View Full Districts List</th>
+                        <th>Majority Votes</th>
+                        <th>View District Election Result</th>
                     </tr>
                 </thead>
 
@@ -83,9 +83,9 @@
                     <tr>
                         <td>{{ $parliment->districtId}}</td>
                         <td>{{ $parliment->currentVoteCount}}</td>
-                        <td>{{ $parliment->majorityCandidate}}</td>
-                        <td>{{ $parliment->majorityVote}}</td>
-                        <td><a href="{{ route('electiondistrictsresult', ['districtId' => $district->districtId, 'electionType'=>'Federal Election']) }}">View</a></td>
+                        <td>{{ $parliment->name}}</td>
+                        <td>{{ $parliment->majorityVoteCount}}</td>
+                        <td><a href="{{ route('electiondistrictsresult', ['districtId' => $parliment->districtId, 'electionType'=>'Federal Election']) }}">View</a></td>
                     </tr>
                     @endforeach
                 </tbody>

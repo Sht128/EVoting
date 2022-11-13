@@ -88,7 +88,7 @@ class VerificationController extends Controller
             $type = 'State Election';
         }
         
-        // Create new Voter Token
+        // Create new   Voter Token
         VoterToken::create([
             'ic' => Auth::user()->ic,
             'token' => encrypt($code),
